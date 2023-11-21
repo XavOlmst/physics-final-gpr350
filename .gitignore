@@ -1,0 +1,17 @@
+*~
+*.sln
+*.csproj
+Temp/
+Library/
+Logs/
+obj/
+*.xml
+UserSettings/
+
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta
+Assets/Plugins/*
+
+log.txt
+.vs/
+.vsconfig
