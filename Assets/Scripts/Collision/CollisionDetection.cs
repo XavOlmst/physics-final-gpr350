@@ -33,14 +33,30 @@ public static class CollisionDetection
     public static void GetNormalAndPenetration(PlaneCollider p, CapsuleCollider c, out Vector3 normal, out float penetration)
     {
         //TODO: rework this, not functional
-        normal = p.Normal;
+        normal = Vector3.zero;
         penetration = 0;
 
-        float offsetLength = Mathf.Min(Vector2.Dot(c.TopPoint, p.Normal), Vector2.Dot(c.BottomPoint, p.Normal));
+        float centerDistance = Vector3.Dot(c.Center, p.Normal);
         
+        float bDist = centerDistance + Vector3.Dot(c.BottomPoint, p.Normal);
+        float tDist = centerDistance + Vector3.Dot(c.TopPoint, p.Normal);
+
+        if (centerDistance >= p.Offset)
+        {
+            float bottomDistance = (c.Radius + p. Offset) - bDist;
+            float topDistance = (c.Radius + p.Offset) - tDist;
         
+            penetration = Mathf.Max(bottomDistance, topDistance);
+            normal = -p.Normal;
+        }
+        else
+        {
+            float bottomDistance = (c.Radius - p. Offset) + bDist;
+            float topDistance = (c.Radius - p.Offset) + tDist;
         
-        penetration = c.Radius - offsetLength;
+            penetration = Mathf.Max(bottomDistance, topDistance);
+            normal = p.Normal;
+        }
     }
     
     public static void GetNormalAndPenetration(Sphere s, CapsuleCollider c, out Vector3 normal, out float penetration)
@@ -182,7 +198,7 @@ public static class CollisionDetection
     public static void ApplyCollisionResolution(PlaneCollider p, CapsuleCollider c)
     {
         GetNormalAndPenetration(p, c, out Vector3 normal, out float penetration);
-
+        
         if (penetration < 0)
         {
             return;

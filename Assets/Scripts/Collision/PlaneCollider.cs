@@ -15,7 +15,9 @@ public class PlaneCollider : PhysicsCollider
     {
         get
         {
-            return transform.position.magnitude;
+            Vector3 n = Normal;
+            float d = Vector3.Dot(n, transform.position);
+            return d;
         }
     }
 }
