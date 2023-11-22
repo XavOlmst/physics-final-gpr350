@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PhysicsCollider : MonoBehaviour
 {
-    public event Action<PhysicsCollider, Particle2D> CollisionHappened;
-
     public float invMass
     {
         get
@@ -51,6 +49,8 @@ public class PhysicsCollider : MonoBehaviour
         }
     }
 
+    public Vector2 angularVelocity;
+
     public Vector3 position
     {
         get { return transform.position; }
@@ -62,10 +62,5 @@ public class PhysicsCollider : MonoBehaviour
                 particle.transform.position = value;
             }
         }
-    }
-
-    public void Invoke(PhysicsCollider physicsCollider, Particle2D particle)
-    {
-        CollisionHappened?.Invoke(physicsCollider, particle);
     }
 }

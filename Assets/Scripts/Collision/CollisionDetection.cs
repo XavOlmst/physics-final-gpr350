@@ -106,16 +106,6 @@ public static class CollisionDetection
 
         s1.velocity -= deltaVelA * contactNormal;
         s2.velocity += deltaVelB * contactNormal;
-        
-        if(s2.TryGetComponent(out Particle2D particle))
-        {
-            s1.Invoke(s2, particle);
-        }
-    
-        if(s1.TryGetComponent(out particle))
-        {
-            s2.Invoke(s1, particle);
-        }
     }
 
     public static void ApplyCollisionResolution(Sphere s, PlaneCollider p)

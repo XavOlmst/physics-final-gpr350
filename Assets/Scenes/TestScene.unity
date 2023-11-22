@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularVelocity: {x: 0, y: 0}
 --- !u!212 &557624792
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -411,6 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularVelocity: {x: 0, y: 0}
 --- !u!212 &955277435
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -489,6 +491,7 @@ GameObject:
   - component: {fileID: 1240814803}
   - component: {fileID: 1240814802}
   - component: {fileID: 1240814801}
+  - component: {fileID: 1240814804}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -508,6 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bdfb60834f4ee246ad9a32e41345f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularVelocity: {x: 0, y: 0}
   LengthOffset: 0.5
   Radius: 0.5
 --- !u!212 &1240814802
@@ -577,6 +581,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 54.47}
+--- !u!114 &1240814804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1240814800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04ee629fcb5944caf8573fac0c676baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocity: {x: 0, y: 0}
+  angularVelocity: {x: 0.15, y: 0.25}
+  damping: 0.999
+  acceleration: {x: 0, y: 0}
+  angularAcceleration: {x: 0, y: 0}
+  gravity: {x: 0, y: -9.8}
+  inverseMass: 1
 --- !u!1001 &1370067962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -631,6 +654,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7480456240513016854, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7480456240513016854, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
+      propertyPath: angularVelocity.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7480456240513016854, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
+      propertyPath: angularVelocity.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8884174885331103408, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
@@ -716,6 +747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularVelocity: {x: 0, y: 0}
 --- !u!212 &1452605295
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -813,6 +845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularVelocity: {x: 0, y: 0}
 --- !u!212 &1941860852
 SpriteRenderer:
   m_ObjectHideFlags: 0

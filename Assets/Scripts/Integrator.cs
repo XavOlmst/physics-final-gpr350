@@ -9,8 +9,24 @@ public static class Integrator
         particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
 
         particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
-
+        
         particle.velocity += particle.acceleration * dt;
         particle.velocity *= Mathf.Pow(particle.damping, dt);
+    }
+
+    public static void Integrate(float radius, Particle2D particle, float dt)
+    {
+        particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
+        particle.transform.Rotate(particle.angularVelocity * dt);
+
+        particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
+        
+        float momentOfInertia = particle.mass * radius * radius * 0.5f;
+        //particle.angularAcceleration = particle.accumulatedTorque * momentOfInertia;
+        
+        particle.velocity += particle.acceleration * dt;
+        particle.velocity *= Mathf.Pow(particle.damping, dt);
+
+        particle.angularVelocity += particle.angularAcceleration * dt;
     }
 }
