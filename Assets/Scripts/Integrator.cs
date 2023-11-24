@@ -17,12 +17,12 @@ public static class Integrator
     public static void Integrate(float radius, Particle2D particle, float dt)
     {
         particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
-        particle.transform.Rotate(particle.angularVelocity * dt);
+        particle.transform.Rotate(Vector3.forward, particle.angularVelocity * dt);
 
         particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
         
-        float momentOfInertia = particle.mass * radius * radius * 0.5f;
-        //particle.angularAcceleration = particle.accumulatedTorque * momentOfInertia;
+        //float momentOfInertia = particle.mass * radius * radius * 0.5f;
+        particle.angularAcceleration = particle.accumulatedTorque * particle.inverseMass;
         
         particle.velocity += particle.acceleration * dt;
         particle.velocity *= Mathf.Pow(particle.damping, dt);

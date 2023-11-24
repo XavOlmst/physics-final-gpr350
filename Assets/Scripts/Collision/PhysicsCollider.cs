@@ -49,8 +49,6 @@ public class PhysicsCollider : MonoBehaviour
         }
     }
 
-    public Vector2 angularVelocity;
-
     public Vector3 position
     {
         get { return transform.position; }

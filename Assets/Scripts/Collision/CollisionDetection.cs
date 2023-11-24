@@ -104,6 +104,8 @@ public static class CollisionDetection
         float deltaVelA = deltaClosingVelocity * inverseTotalInverseMass * s1.invMass;
         float deltaVelB = deltaClosingVelocity * inverseTotalInverseMass * s2.invMass;
 
+        
+        
         s1.velocity -= deltaVelA * contactNormal;
         s2.velocity += deltaVelB * contactNormal;
     }
@@ -181,8 +183,24 @@ public static class CollisionDetection
         float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * s.invMass;
         float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * c.invMass;
 
+        if (c.TryGetComponent(out Particle2D particle))
+        {
+            Vector2 closestPoint = c.ClosestPoint(s.Center);
+            Vector2 forceB = deltaVelB * normal;
+            float dotProduct;
+
+            dotProduct = c.transform.rotation.z is < 180 and > 0 ? Vector2.Dot(forceB, -c.transform.up)
+                : Vector2.Dot(forceB, c.transform.up);
+
+            float sinAngle = dotProduct / forceB.magnitude;
+            
+            particle.AddTorque(closestPoint.magnitude, forceB, sinAngle);
+        }
+        
         s.velocity -= deltaVelA * normal;
         c.velocity += deltaVelB * normal;
+
+        GameObject.Destroy(s.gameObject);
     }
     
     public static void ApplyCollisionResolution(PlaneCollider p, CapsuleCollider c)
@@ -219,6 +237,16 @@ public static class CollisionDetection
         float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * p.invMass;
         float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * c.invMass;
 
+        //TODO: handle adding a torque force based on the change in velocity
+        /*if (c.TryGetComponent(out Particle2D particle))
+        {
+            Vector2 closestPoint = c.ClosestPoint(normal);
+            Vector2 forceB = c.Center + deltaVelB * (Vector2) normal;
+            float sinAngle = Vector3.Cross(closestPoint, forceB).magnitude / (closestPoint.magnitude * forceB.magnitude);
+            
+            particle.AddTorque(c.Radius, forceB, sinAngle);
+        }*/
+        
         p.velocity -= deltaVelA * normal;
         c.velocity += deltaVelB * normal;
     }

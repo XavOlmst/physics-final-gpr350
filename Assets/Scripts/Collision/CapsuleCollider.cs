@@ -13,7 +13,7 @@ public class CapsuleCollider : PhysicsCollider
     {
         get
         {
-            return -(Vector2) (transform.up * LengthOffset);
+            return (Vector2) (transform.up * LengthOffset);
         }
     }
     
@@ -21,23 +21,25 @@ public class CapsuleCollider : PhysicsCollider
     {
         get
         {
-            return (Vector2) (transform.up * LengthOffset);
+            return -(Vector2) (transform.up * LengthOffset);
         }
     }
 
     public Vector2 ClosestPoint(Vector2 pos)
     {
-        Vector2 closestPoint = new();
-        
         Vector3 distance = pos - Center;
 
-        float localLengthX = Vector3.Dot(distance, transform.up);
-        float localLengthY = Vector3.Dot(distance, transform.up);
-        
-        float uLocalClosest = Mathf.Clamp(localLengthX, BottomPoint.x, TopPoint.x);
-        float vLocalClosest = Mathf.Clamp(localLengthY, BottomPoint.y, TopPoint.y);
+        Vector3 up = transform.up;
+        float localLengthX = Vector3.Dot(distance, up);
+        float localLengthY = Vector3.Dot(distance, up);
 
-        closestPoint = uLocalClosest * transform.up + vLocalClosest * transform.up;
+        float uLocalClosest = BottomPoint.x < TopPoint.x ? Mathf.Clamp(localLengthX, BottomPoint.x, TopPoint.x)
+            : Mathf.Clamp(localLengthX, TopPoint.x, BottomPoint.x);
+
+        float vLocalClosest = BottomPoint.y < TopPoint.y ? Mathf.Clamp(localLengthY, BottomPoint.y, TopPoint.y)
+            : Mathf.Clamp(localLengthY, TopPoint.y, BottomPoint.y);
+        
+        Vector2 closestPoint = up * uLocalClosest + up * vLocalClosest;
         
         return closestPoint + Center;
     }
