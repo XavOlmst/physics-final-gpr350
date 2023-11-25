@@ -98,10 +98,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
+  angularVelocity: 0
   damping: 0.99
   acceleration: {x: 0, y: 0}
+  angularAcceleration: 0
   gravity: {x: 0, y: -9.81}
-  inverseMass: 1
+  inverseMass: 0.00001
 --- !u!114 &5502741424710855362
 MonoBehaviour:
   m_ObjectHideFlags: 0

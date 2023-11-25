@@ -185,16 +185,20 @@ public static class CollisionDetection
 
         if (c.TryGetComponent(out Particle2D particle))
         {
-            Vector2 closestPoint = c.ClosestPoint(s.Center);
+            Vector2 closestPoint = c.ClosestPoint(s.Center) - c.Center;
             Vector2 forceB = deltaVelB * normal;
-            float dotProduct;
 
-            dotProduct = c.transform.rotation.z is < 180 and > 0 ? Vector2.Dot(forceB, -c.transform.up)
-                : Vector2.Dot(forceB, c.transform.up);
-
-            float sinAngle = dotProduct / forceB.magnitude;
+            float dotProduct = Vector2.Dot(normal, c.transform.up);
+            float sinAngle = dotProduct / normal.magnitude;
             
-            particle.AddTorque(closestPoint.magnitude, forceB, sinAngle);
+            if (Vector2.Dot(normal, c.transform.right) >= 0)
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, sinAngle);
+            }
+            else
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, -sinAngle);
+            }
         }
         
         s.velocity -= deltaVelA * normal;
@@ -238,14 +242,23 @@ public static class CollisionDetection
         float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * c.invMass;
 
         //TODO: handle adding a torque force based on the change in velocity
-        /*if (c.TryGetComponent(out Particle2D particle))
+        if (c.TryGetComponent(out Particle2D particle))
         {
-            Vector2 closestPoint = c.ClosestPoint(normal);
-            Vector2 forceB = c.Center + deltaVelB * (Vector2) normal;
-            float sinAngle = Vector3.Cross(closestPoint, forceB).magnitude / (closestPoint.magnitude * forceB.magnitude);
+            Vector2 closestPoint = c.ClosestPoint(p.Normal) - c.Center;
+            Vector2 forceB = deltaVelB * normal;
+
+            float dotProduct = Vector2.Dot(normal, c.transform.up);
+            float sinAngle = dotProduct / normal.magnitude;
             
-            particle.AddTorque(c.Radius, forceB, sinAngle);
-        }*/
+            if (Vector2.Dot(normal, c.transform.right) >= 0)
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, sinAngle);
+            }
+            else
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, -sinAngle);
+            }
+        }
         
         p.velocity -= deltaVelA * normal;
         c.velocity += deltaVelB * normal;

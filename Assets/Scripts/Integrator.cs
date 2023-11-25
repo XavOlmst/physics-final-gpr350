@@ -21,7 +21,7 @@ public static class Integrator
 
         particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
         
-        //float momentOfInertia = particle.mass * radius * radius * 0.5f;
+        //float momentOfInertia = particle.inverseMass * radius * radius * 0.5f;
         particle.angularAcceleration = particle.accumulatedTorque * particle.inverseMass;
         
         particle.velocity += particle.acceleration * dt;
