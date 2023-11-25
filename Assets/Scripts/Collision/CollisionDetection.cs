@@ -188,8 +188,8 @@ public static class CollisionDetection
             Vector2 closestPoint = c.ClosestPoint(s.Center) - c.Center;
             Vector2 forceB = normal * (deltaVelB * totalInverseMass);
 
-            float dotProduct = Vector2.Dot(normal, c.transform.up);
-            float sinAngle = dotProduct / normal.magnitude;
+            float sinAngle = Vector2.Dot(normal, c.transform.up);
+            //float sinAngle = dotProduct / normal.magnitude;
             
             if (Vector2.Dot(normal, c.transform.right) >= 0)
             {
@@ -247,8 +247,8 @@ public static class CollisionDetection
             Vector2 closestPoint = c.ClosestPoint(p.Normal) - c.Center;
             Vector2 forceB = normal * (deltaVelB * totalInverseMass);
 
-            float dotProduct = Vector2.Dot(normal, c.transform.up);
-            float sinAngle = dotProduct / normal.magnitude;
+            float sinAngle = Vector2.Dot(normal, c.transform.up);
+            //float sinAngle = dotProduct / normal.magnitude;
             
             if (Vector2.Dot(normal, c.transform.right) >= 0)
             {
