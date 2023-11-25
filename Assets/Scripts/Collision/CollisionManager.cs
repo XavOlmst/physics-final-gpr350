@@ -33,6 +33,12 @@ public class CollisionManager : MonoBehaviour
         for (var i = 0; i < capsules.Length; i++)
         {
             var capsule = capsules[i];
+            
+            for (int j = i + 1; j < capsules.Length; j++)
+            {
+                var capsuleB = capsules[j];
+                CollisionDetection.ApplyCollisionResolution(capsule, capsuleB);
+            }
 
             foreach (PlaneCollider plane in colliders)
             {

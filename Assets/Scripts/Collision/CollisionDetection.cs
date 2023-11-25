@@ -71,6 +71,13 @@ public static class CollisionDetection
 
     }
     
+    public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Vector3 normal, out float penetration)
+    {
+        Vector2 offset = c1.ClosestPoint(c2.Center) - c2.ClosestPoint(c1.Center);
+        normal = offset / offset.magnitude;
+        penetration = (c1.Radius + c2.Radius) - offset.magnitude;
+    }
+    
     public static void ApplyCollisionResolution(Sphere s1, Sphere s2)
     {
         GetNormalAndPenetration(s1, s2, out Vector3 contactNormal, out float penetration);
@@ -262,5 +269,61 @@ public static class CollisionDetection
         
         p.velocity -= deltaVelA * normal;
         c.velocity += deltaVelB * normal;
+    }
+    
+     public static void ApplyCollisionResolution(CapsuleCollider c1, CapsuleCollider c2)
+    {
+        GetNormalAndPenetration(c1, c2, out Vector3 normal, out float penetration);
+
+        if (penetration < 0)
+        {
+            return;
+        }
+
+        float totalInverseMass = c2.invMass + c1.invMass;
+        float inverseTotalInvertedMass = 1.0f / (totalInverseMass + Mathf.Epsilon);
+        float deltaPosA = penetration * c1.invMass * inverseTotalInvertedMass;
+        float deltaPosB = penetration * c2.invMass * inverseTotalInvertedMass;
+
+        c1.position += deltaPosA * normal;
+        c2.position -= deltaPosB * normal;
+        
+        
+        Vector3 relativeVelocity = (c2.velocity - c1.velocity);
+        
+        float closingVelocity = Vector3.Dot(relativeVelocity, normal);
+
+        if (closingVelocity < 0.0f)
+        {
+            return;
+        }
+
+        const float restitution = 0.7f;
+        float newClosingVelocity = -closingVelocity * restitution;
+        float deltaClosingVelocity = newClosingVelocity - closingVelocity;
+
+        float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * c1.invMass;
+        float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * c2.invMass;
+
+        if (c2.TryGetComponent(out Particle2D particle))
+        {
+            Vector2 closestPoint = c1.ClosestPoint(c2.Center) - c2.ClosestPoint(c1.Center);
+            Vector2 forceB = normal * (deltaVelB * totalInverseMass);
+
+            float sinAngle = Vector2.Dot(normal, c2.transform.up);
+            //float sinAngle = dotProduct / normal.magnitude;
+            
+            if (Vector2.Dot(normal, c2.transform.right) >= 0)
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, sinAngle);
+            }
+            else
+            {
+                particle.AddTorque(closestPoint.magnitude, forceB, -sinAngle);
+            }
+        }
+        
+        c1.velocity -= deltaVelA * normal;
+        c2.velocity += deltaVelB * normal;
     }
 }
