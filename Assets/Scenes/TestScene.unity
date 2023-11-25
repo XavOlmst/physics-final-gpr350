@@ -592,11 +592,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   angularVelocity: 0
-  damping: 0.99
+  damping: 0.8
+  angularDamping: 0.8
   acceleration: {x: 0, y: 0}
   angularAcceleration: 0
   gravity: {x: 0, y: -9.81}
-  inverseMass: 100
+  inverseMass: 50
 --- !u!1 &1378715755
 GameObject:
   m_ObjectHideFlags: 0

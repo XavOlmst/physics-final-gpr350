@@ -28,5 +28,6 @@ public static class Integrator
         particle.velocity *= Mathf.Pow(particle.damping, dt);
 
         particle.angularVelocity += particle.angularAcceleration * dt;
+        particle.angularVelocity *= Mathf.Pow(particle.angularDamping, dt);
     }
 }

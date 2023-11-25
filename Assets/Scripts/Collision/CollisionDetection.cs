@@ -176,7 +176,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 1;
+        const float restitution = 0.7f;
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -186,7 +186,7 @@ public static class CollisionDetection
         if (c.TryGetComponent(out Particle2D particle))
         {
             Vector2 closestPoint = c.ClosestPoint(s.Center) - c.Center;
-            Vector2 forceB = deltaVelB * normal;
+            Vector2 forceB = normal * (deltaVelB * totalInverseMass);
 
             float dotProduct = Vector2.Dot(normal, c.transform.up);
             float sinAngle = dotProduct / normal.magnitude;
@@ -234,7 +234,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 1;
+        const float restitution = 0.7f;
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -245,7 +245,7 @@ public static class CollisionDetection
         if (c.TryGetComponent(out Particle2D particle))
         {
             Vector2 closestPoint = c.ClosestPoint(p.Normal) - c.Center;
-            Vector2 forceB = deltaVelB * normal;
+            Vector2 forceB = normal * (deltaVelB * totalInverseMass);
 
             float dotProduct = Vector2.Dot(normal, c.transform.up);
             float sinAngle = dotProduct / normal.magnitude;

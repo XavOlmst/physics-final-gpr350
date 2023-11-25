@@ -5,6 +5,7 @@ public class Particle2D : MonoBehaviour
     public Vector2 velocity;
     public float angularVelocity;
     public float damping = 0.999f;
+    public float angularDamping = 0.99f;
     public Vector2 acceleration;
     public float angularAcceleration;
     public Vector2 gravity = new Vector2(0, -9.8f);
@@ -63,6 +64,6 @@ public class Particle2D : MonoBehaviour
     public void AddTorque(float radius, Vector2 force, float angle)
     {
         //float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
-        accumulatedTorque += radius * force.magnitude * angle;
+        accumulatedTorque += radius * force.magnitude * Mathf.Sin(angle);
     }
 }
