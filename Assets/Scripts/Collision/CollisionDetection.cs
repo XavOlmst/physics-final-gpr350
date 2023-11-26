@@ -7,6 +7,8 @@ using UnityEngine.Assertions;
 
 public static class CollisionDetection
 {
+    const float restitution = 0.7f;
+    
     public static void GetNormalAndPenetration(Sphere s1, Sphere s2, out Vector3 normal, out float penetration)
     {
         Vector3 offset = s1.position - s2.position;
@@ -74,7 +76,7 @@ public static class CollisionDetection
     public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Vector3 normal, out float penetration)
     {
         Vector2 offset = c1.ClosestPoint(c2.Center) - c2.ClosestPoint(c1.Center);
-        normal = offset / offset.magnitude;
+        normal = offset.normalized;
         penetration = (c1.Radius + c2.Radius) - offset.magnitude;
     }
     
@@ -104,7 +106,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 1;
+
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -143,8 +145,7 @@ public static class CollisionDetection
         {
             return;
         }
-
-        const float restitution = 1;
+        
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -183,7 +184,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 0.7f;
+        //const float restitution = 0.7f;
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -241,7 +242,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 0.7f;
+        //const float restitution = 0.7f;
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 
@@ -298,7 +299,7 @@ public static class CollisionDetection
             return;
         }
 
-        const float restitution = 0.7f;
+        //const float restitution = 0.7f;
         float newClosingVelocity = -closingVelocity * restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
 

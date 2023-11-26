@@ -776,7 +776,7 @@ MonoBehaviour:
   angularDamping: 0.8
   acceleration: {x: 0, y: 0}
   angularAcceleration: 0
-  gravity: {x: 0, y: -9.81}
+  gravity: {x: 0, y: 0}
   inverseMass: 50
 --- !u!114 &1466468146
 MonoBehaviour:
