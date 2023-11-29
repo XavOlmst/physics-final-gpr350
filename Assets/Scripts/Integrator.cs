@@ -21,8 +21,8 @@ public static class Integrator
 
         particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
         
-        //float momentOfInertia = particle.inverseMass * radius * radius * 0.5f;
-        particle.angularAcceleration = particle.accumulatedTorque * particle.inverseMass;
+        float momentOfInertia = radius * radius / particle.inverseMass;
+        particle.angularAcceleration = particle.accumulatedTorque / momentOfInertia; //TODO: Ask Kevin for help (might be doing right now?)
         
         particle.velocity += particle.acceleration * dt;
         particle.velocity *= Mathf.Pow(particle.damping, dt);

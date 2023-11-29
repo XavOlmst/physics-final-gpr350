@@ -104,7 +104,7 @@ MonoBehaviour:
   acceleration: {x: 0, y: 0}
   angularAcceleration: 0
   gravity: {x: 0, y: -9.81}
-  inverseMass: 0.00001
+  inverseMass: 1
 --- !u!114 &5502741424710855362
 MonoBehaviour:
   m_ObjectHideFlags: 0
