@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-6034438818361066306
 MonoBehaviour:
@@ -48,9 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 8884174885331103408, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
-  - {fileID: 8884174885331103408, guid: 3ec3dde09b03d4a8c882ace0dbd6144c, type: 3}
-  - {fileID: 8884174885331103408, guid: 506cbcd830e174a2ea3d46b9f06619a7, type: 3}
-  - {fileID: 8884174885331103408, guid: 70924c9b71c6248e39c57c697933bb0f, type: 3}
+  - {fileID: 1517227914728567194, guid: 389b23f5c69232442a1926585859f11a, type: 3}
+  - {fileID: 8131837665810694499, guid: eece6786fa81e2a4b89656edc07c6717, type: 3}
 --- !u!23 &839008958913202466
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -71,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f2c6c5c9989fb4948ab12604c4f68535, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

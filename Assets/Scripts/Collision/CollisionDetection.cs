@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 public static class CollisionDetection
 {
-    const float restitution = 0.9f;
+    const float restitution = 0.7f;
     
     public static void GetNormalAndPenetration(Sphere s1, Sphere s2, out Vector3 normal, out float penetration)
     {
@@ -312,7 +312,7 @@ public static class CollisionDetection
         {
             Vector2 c2Closest = c2.ClosestPoint(c1.Center);
             Vector2 c1Closest = c1.ClosestPoint(c2Closest);
-            Vector2 closestPoint = c2Closest - c1Closest;
+            Vector2 closestPoint = c1Closest - c2Closest;
             Vector2 forceB = normal * (deltaVelB * totalInverseMass);
         
             float sinAngle = Vector2.Dot(normal, c2.transform.up);
