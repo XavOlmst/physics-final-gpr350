@@ -4,19 +4,37 @@ using System.Security.Cryptography;
 using Unity.Plastic.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.InputSystem;
+
+public class Contact
+{
+    public Vector3 Normal;
+    public float Penetration;
+    public PhysicsCollider Collider1;
+    public PhysicsCollider Collider2;
+
+    public Contact(PhysicsCollider collider1, PhysicsCollider collider2, Vector3 normal, float penetration)
+    {
+        Collider1 = collider1;
+        Collider2 = collider2;
+        Normal = normal;
+        Penetration = penetration;
+    }
+}
+
 
 public static class CollisionDetection
 {
     const float restitution = 0.7f;
     
-    public static void GetNormalAndPenetration(Sphere s1, Sphere s2, out Vector3 normal, out float penetration)
+    public static void GetNormalAndPenetration(CircleCollider s1, CircleCollider s2, out Vector3 normal, out float penetration)
     {
         Vector3 offset = s1.position - s2.position;
         normal = offset / offset.magnitude;
         penetration = (s1.Radius + s2.Radius) - offset.magnitude;
     }
 
-    public static void GetNormalAndPenetration(Sphere s, PlaneCollider p, out Vector3 normal, out float penetration)
+    public static void GetNormalAndPenetration(CircleCollider s, PlaneCollider p, out Vector3 normal, out float penetration)
     {
         float distance = Vector3.Dot(s.position, p.Normal);
         
@@ -32,7 +50,7 @@ public static class CollisionDetection
         }
     }
 
-    public static void GetNormalAndPenetration(PlaneCollider p, CapsuleCollider c, out Vector3 normal, out float penetration)
+    public static void GetNormalAndPenetration(CapsuleCollider c, PlaneCollider p, out Vector3 normal, out float penetration)
     {
         //TODO: rework this, not functional
         normal = Vector3.zero;
@@ -49,7 +67,7 @@ public static class CollisionDetection
             float topDistance = (c.Radius + p.Offset) - tDist;
         
             penetration = Mathf.Max(bottomDistance, topDistance);
-            normal = -p.Normal;
+            normal = p.Normal;
         }
         else
         {
@@ -57,20 +75,20 @@ public static class CollisionDetection
             float topDistance = (c.Radius - p.Offset) + tDist;
         
             penetration = Mathf.Max(bottomDistance, topDistance);
-            normal = p.Normal;
+            normal = -p.Normal;
         }
     }
     
-    public static void GetNormalAndPenetration(Sphere s, CapsuleCollider c, out Vector3 normal, out float penetration)
+    public static void GetNormalAndPenetration(CircleCollider s, CapsuleCollider c, out Vector3 normal, out float penetration)
     {
         normal = Vector2.zero;
         penetration = 0;
 
-        Vector2 offset = (Vector2) s.Center - c.ClosestPoint(s.Center);
+        Vector2 closestPoint = c.ClosestPoint(s.Center);
+        Vector2 offset = (Vector2) s.Center - closestPoint;
         normal = offset.normalized;
 
         penetration = (s.Radius + c.Radius) - offset.magnitude;
-
     }
     
     public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Vector3 normal, out float penetration)
@@ -81,8 +99,55 @@ public static class CollisionDetection
         normal = offset.normalized;
         penetration = (c1.Radius + c2.Radius) - offset.magnitude;
     }
+
+
+    public static void ApplyCollisionResolution(Contact contact)
+    {
+        if (contact.Penetration < 0)
+        {
+            return;
+        }
+        
+        float totalInverseMass = contact.Collider1.invMass + contact.Collider2.invMass;
+        float inverseTotalInvertedMass = 1.0f / (totalInverseMass + Mathf.Epsilon);
+        float deltaPosA = contact.Penetration * contact.Collider1.invMass * inverseTotalInvertedMass;
+        float deltaPosB = contact.Penetration * contact.Collider2.invMass * inverseTotalInvertedMass;
+
+        contact.Collider1.position += deltaPosA * contact.Normal;
+        contact.Collider2.position -= deltaPosB * contact.Normal;
+
+        Vector3 relativeVelocity = (contact.Collider2.velocity - contact.Collider1.velocity);
+        float closingVelocity = Vector3.Dot(relativeVelocity, contact.Normal);
+
+        if (closingVelocity < 0.0f)
+        {
+            return;
+        }
+        
+        float newClosingVelocity = -closingVelocity * restitution;
+        float deltaClosingVelocity = newClosingVelocity - closingVelocity;
+
+        float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider1.invMass;
+        float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider2.invMass;
+
+        if (contact.Collider1.TryGetComponent(out CapsuleCollider capsule1))
+        {
+            Vector2 force = contact.Normal * (deltaVelA * contact.Collider1.invMass); //(totalInverseMass)
+            capsule1.AddTorque(contact.Normal, capsule1.ClosestPoint((Vector2)contact.Normal + capsule1.Center) - capsule1.Center, force.magnitude);
+        }
+        
+        if (contact.Collider2.TryGetComponent(out CapsuleCollider capsule2))
+        {
+            Vector2 force = contact.Normal * (deltaVelB * contact.Collider2.invMass);
+            capsule2.AddTorque(contact.Normal, capsule2.ClosestPoint((Vector2)contact.Normal + capsule2.Center) - capsule2.Center, force.magnitude);
+        }
+        
+        contact.Collider1.velocity -= deltaVelA * contact.Normal;
+        contact.Collider2.velocity += deltaVelB * contact.Normal;
+    }
     
-    public static void ApplyCollisionResolution(Sphere s1, Sphere s2)
+    /*
+    public static void ApplyCollisionResolution(CircleCollider s1, CircleCollider s2)
     {
         GetNormalAndPenetration(s1, s2, out Vector3 normal, out float penetration);
         
@@ -124,10 +189,20 @@ public static class CollisionDetection
         s2.velocity += deltaVelB * normal;
     }
 
-    public static void ApplyCollisionResolution(Sphere s, PlaneCollider p)
+    
+    
+    public static void ApplyCollisionResolution(CircleCollider s, PlaneCollider p)
     {
         GetNormalAndPenetration(s, p, out Vector3 normal, out float penetration);
 
+        //Need for collisions
+        /*
+         normal
+         penetration
+         particle 1 (physics collider maybe?)
+         particle 2
+         #1#
+        
         if (penetration < 0)
         {
             return;
@@ -162,7 +237,7 @@ public static class CollisionDetection
         
     }
     
-    public static void ApplyCollisionResolution(Sphere s, CapsuleCollider c)
+    public static void ApplyCollisionResolution(CircleCollider s, CapsuleCollider c)
     {
         GetNormalAndPenetration(s, c, out Vector3 normal, out float penetration);
 
@@ -213,13 +288,11 @@ public static class CollisionDetection
         
         s.velocity -= deltaVelA * normal;
         c.velocity += deltaVelB * normal;
-
-        GameObject.Destroy(s.gameObject);
     }
     
     public static void ApplyCollisionResolution(PlaneCollider p, CapsuleCollider c)
     {
-        GetNormalAndPenetration(p, c, out Vector3 normal, out float penetration);
+        GetNormalAndPenetration(c, p, out Vector3 normal, out float penetration);
         
         if (penetration < 0)
         {
@@ -327,5 +400,5 @@ public static class CollisionDetection
         
         c1.velocity -= deltaVelA * normal;
         c2.velocity += deltaVelB * normal;
-    }
+    }*/
 }

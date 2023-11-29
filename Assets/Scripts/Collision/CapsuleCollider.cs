@@ -38,4 +38,19 @@ public class CapsuleCollider : PhysicsCollider
         
         return closestPoint + Center;
     }
+
+    public void AddTorque(Vector3 normal, Vector3 closestPoint, float force)
+    {
+        if (!TryGetComponent(out Particle2D particle)) return;
+        //Vector2 forceB = normal * (acceleration * (invMass));
+            
+        if (Vector2.Dot(normal, transform.right) >= 0)
+        {
+            particle.AddTorque(closestPoint.magnitude, normal, force);
+        }
+        /*else
+        {
+            particle.AddTorque(closestPoint.magnitude, -normal, force);
+        }*/
+    }
 }

@@ -6,27 +6,33 @@ public class CollisionManager : MonoBehaviour
 {
     private void FixedUpdate()
     {
-        Sphere[] spheres = FindObjectsOfType<Sphere>();
+        CircleCollider[] spheres = FindObjectsOfType<CircleCollider>();
         PlaneCollider[] colliders = FindObjectsOfType<PlaneCollider>();
         CapsuleCollider[] capsules = FindObjectsOfType<CapsuleCollider>();
 
         for (int i = 0; i < spheres.Length; i++)
         {
-            Sphere sphereA = spheres[i];
+            CircleCollider sphere = spheres[i];
             for (int j = i + 1; j < spheres.Length; j++)
             {
-                Sphere sphereB = spheres[j];
-                CollisionDetection.ApplyCollisionResolution(sphereA, sphereB);
+                CircleCollider sphereB = spheres[j];
+                CollisionDetection.GetNormalAndPenetration(sphere, sphereB, out Vector3 normal, out float penetration);
+                Contact contact = new(sphere, sphereB, normal, penetration);
+                CollisionDetection.ApplyCollisionResolution(contact);
             }
 
             foreach (PlaneCollider planeCollider in colliders)
             {
-                CollisionDetection.ApplyCollisionResolution(sphereA, planeCollider);
+                CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Vector3 normal, out float penetration);
+                Contact contact = new(sphere, planeCollider, normal, penetration);
+                CollisionDetection.ApplyCollisionResolution(contact);
             }
 
             foreach (CapsuleCollider capsule in capsules)
             {
-                CollisionDetection.ApplyCollisionResolution(sphereA, capsule);
+                CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Vector3 normal, out float penetration);
+                Contact contact = new(sphere, capsule, normal, penetration);
+                CollisionDetection.ApplyCollisionResolution(contact);
             }
         }
 
@@ -37,12 +43,16 @@ public class CollisionManager : MonoBehaviour
             for (int j = i + 1; j < capsules.Length; j++)
             {
                 var capsuleB = capsules[j];
-                CollisionDetection.ApplyCollisionResolution(capsule, capsuleB);
+                CollisionDetection.GetNormalAndPenetration(capsule, capsuleB, out Vector3 normal, out float penetration);
+                Contact contact = new(capsule, capsuleB, normal, penetration);
+                CollisionDetection.ApplyCollisionResolution(contact);
             }
 
             foreach (PlaneCollider plane in colliders)
             {
-                CollisionDetection.ApplyCollisionResolution(plane, capsule);
+                CollisionDetection.GetNormalAndPenetration(capsule, plane, out Vector3 normal, out float penetration);
+                Contact contact = new(capsule, plane, normal, penetration);
+                CollisionDetection.ApplyCollisionResolution(contact);
             }
         }
     }

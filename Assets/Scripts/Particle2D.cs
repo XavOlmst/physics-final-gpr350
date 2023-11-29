@@ -17,7 +17,7 @@ public class Particle2D : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if(TryGetComponent(out Sphere sphere))
+        if(TryGetComponent(out CircleCollider sphere))
         {
             DoFixedUpdate(sphere.Radius, Time.deltaTime);
         }
@@ -70,16 +70,17 @@ public class Particle2D : MonoBehaviour
     public void AddTorque(float radius, Vector2 forceDirection, float force)
     {
 
-        float sinAngle = Vector2.Dot(forceDirection, transform.up);
+        float cosAngle = Vector2.Dot(forceDirection, transform.up); //something here is wrong
         //float sinAngle = dotProduct / normal.magnitude;
-            
-        if (Vector2.Dot(forceDirection, transform.right) >= 0)
+
+        float dot = Vector2.Dot(forceDirection, transform.right);
+        if (dot > 0)
         {
-            AddTorque(radius, force, sinAngle);
+            AddTorque(radius, force, cosAngle);
         }
-        else
+        else if (dot < 0)
         {
-            AddTorque(radius, force, -sinAngle);
+            AddTorque(radius, force, -cosAngle);
         }
     }
 }
