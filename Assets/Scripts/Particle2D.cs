@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Particle2D : MonoBehaviour
@@ -12,15 +13,17 @@ public class Particle2D : MonoBehaviour
     public float inverseMass = 1.0f;
     public Vector2 accumulatedForces { get; private set; }
     public float accumulatedTorque { get; private set; }
-    public bool IsBone = false;
     public float mass => 1 / inverseMass;
+    public PivotBone Bone;
     
     public void FixedUpdate()
     {
-        if (IsBone)
+        if (Bone)
         {
-            CapsuleCollider capsule = GetComponentInChildren<CapsuleCollider>();
-            DoFixedUpdate((capsule.Center - (Vector2) transform.position).magnitude, Time.deltaTime);
+            foreach (var child in Bone.ChildCapsules)
+            {
+                DoFixedUpdate((child.transform.position - transform.position).magnitude, Time.deltaTime, child);
+            }
         }
         
         if(TryGetComponent(out CircleCollider sphere))
@@ -48,6 +51,14 @@ public class Particle2D : MonoBehaviour
     {
         acceleration = gravity + accumulatedForces * inverseMass;
         Integrator.Integrate(radius,this, dt);
+        ClearForces();
+        ClearTorque();
+    }
+
+    public void DoFixedUpdate(float radius, float dt, Particle2D childParticle)
+    {
+        acceleration = gravity + accumulatedForces * inverseMass;
+        Integrator.Integrate(radius,this, dt, childParticle, Bone);
         ClearForces();
         ClearTorque();
     }
