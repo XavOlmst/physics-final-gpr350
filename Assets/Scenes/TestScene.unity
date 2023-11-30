@@ -395,7 +395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 665476358950075730, guid: eece6786fa81e2a4b89656edc07c6717, type: 3}
       propertyPath: inverseMass
-      value: 50
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 665476358950075730, guid: eece6786fa81e2a4b89656edc07c6717, type: 3}
       propertyPath: angularDamping
@@ -872,7 +872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5192981409028981147, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: inverseMass
-      value: 25
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_RootOrder
@@ -892,7 +892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.97570693
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -904,7 +904,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.21907987
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -916,7 +916,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -25.31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

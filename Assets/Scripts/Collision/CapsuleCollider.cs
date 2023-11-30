@@ -39,12 +39,12 @@ public class CapsuleCollider : PhysicsCollider
         return closestPoint + Center;
     }
 
-    public void AddTorque(Vector3 normal, Vector3 closestPoint, float force)
+    public void AddTorque(Vector3 closestPoint, Vector3 force)
     {
         if (!TryGetComponent(out Particle2D particle)) return;
         //Vector2 forceB = normal * (acceleration * (invMass));
             
-        particle.AddTorque(closestPoint.magnitude, normal, force);
+        particle.AddTorque(closestPoint, force);
 
         
         /*
