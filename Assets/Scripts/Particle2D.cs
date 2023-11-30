@@ -14,7 +14,7 @@ public class Particle2D : MonoBehaviour
     public float accumulatedTorque { get; private set; }
     public bool IsBone = false;
     public float mass => 1 / inverseMass;
-
+    
     public void FixedUpdate()
     {
         if (IsBone)

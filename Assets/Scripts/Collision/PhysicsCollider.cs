@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PhysicsCollider : MonoBehaviour
 {
+    public Particle2D ParentBone;
+    
     public float invMass
     {
         get

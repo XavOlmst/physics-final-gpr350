@@ -5,6 +5,7 @@ using Unity.Plastic.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 public class Contact
 {
@@ -112,7 +113,7 @@ public static class CollisionDetection
         float inverseTotalInvertedMass = 1.0f / (totalInverseMass + Mathf.Epsilon);
         float deltaPosA = contact.Penetration * contact.Collider1.invMass * inverseTotalInvertedMass;
         float deltaPosB = contact.Penetration * contact.Collider2.invMass * inverseTotalInvertedMass;
-
+    
         contact.Collider1.position += deltaPosA * contact.Normal;
         contact.Collider2.position -= deltaPosB * contact.Normal;
 
@@ -145,7 +146,7 @@ public static class CollisionDetection
         contact.Collider1.velocity -= deltaVelA * contact.Normal;
         contact.Collider2.velocity += deltaVelB * contact.Normal;
     }
-    
+
     /*
     public static void ApplyCollisionResolution(CircleCollider s1, CircleCollider s2)
     {

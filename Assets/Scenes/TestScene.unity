@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParentBone: {fileID: 0}
 --- !u!212 &557624792
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -484,6 +485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParentBone: {fileID: 0}
 --- !u!212 &955277435
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -625,6 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParentBone: {fileID: 0}
 --- !u!212 &1452605295
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -727,6 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f74720c7c3c4cc5b2f267c8b38e33f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParentBone: {fileID: 0}
 --- !u!212 &1941860852
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -841,7 +845,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   angularVelocity: 0
-  damping: 0
+  damping: 0.8
   angularDamping: 0.99
   acceleration: {x: 0, y: 0}
   angularAcceleration: 0
@@ -935,11 +939,11 @@ PrefabInstance:
       objectReference: {fileID: 2001046070}
     - target: {fileID: 5192981409028981147, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: damping
-      value: 0
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5192981409028981147, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: inverseMass
-      value: 1e-11
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8389480285166339085, guid: 389b23f5c69232442a1926585859f11a, type: 3}
       propertyPath: m_RootOrder

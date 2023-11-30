@@ -8,7 +8,6 @@ public class CapsuleCollider : PhysicsCollider
     public float LengthOffset = 0.5f;
     public Vector2 Center => transform.position;
     public float Radius = .5f;
-    public Particle2D ParentBone;
 
     public Vector2 TopPoint
     {
