@@ -9,6 +9,7 @@ public class CapsuleCollider : PhysicsCollider
     public Vector2 Center => transform.position;
     public float Radius = .5f;
     public Particle2D ParentBone;
+    public List<Particle2D> ChildBones; 
 
     public Vector2 TopPoint
     {
