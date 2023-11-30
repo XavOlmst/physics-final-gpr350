@@ -44,13 +44,16 @@ public class CapsuleCollider : PhysicsCollider
         if (!TryGetComponent(out Particle2D particle)) return;
         //Vector2 forceB = normal * (acceleration * (invMass));
             
+        particle.AddTorque(closestPoint.magnitude, normal, force);
+
+        
+        /*
         if (Vector2.Dot(normal, transform.right) >= 0)
         {
-            particle.AddTorque(closestPoint.magnitude, normal, force);
         }
-        /*else
+        else
         {
-            particle.AddTorque(closestPoint.magnitude, -normal, force);
+            particle.AddTorque(closestPoint.magnitude, normal, force);
         }*/
     }
 }
