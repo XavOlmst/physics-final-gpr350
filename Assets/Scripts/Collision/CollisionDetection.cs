@@ -132,14 +132,14 @@ public static class CollisionDetection
 
         if (contact.Collider1.TryGetComponent(out CapsuleCollider capsule1))
         {
-            Vector2 force = contact.Normal * (deltaVelA * contact.Collider1.invMass);
-            capsule1.AddTorque(contact.Normal, capsule1.ClosestPoint((Vector2)contact.Normal + capsule1.Center) - capsule1.Center, force.magnitude);
+            Vector3 force = contact.Normal * (deltaVelA / Time.deltaTime);
+            capsule1.AddTorque(capsule1.ClosestPoint((Vector2)contact.Normal + capsule1.Center) - capsule1.Center, force);
         }
         
         if (contact.Collider2.TryGetComponent(out CapsuleCollider capsule2))
         {
-            Vector2 force = contact.Normal * (deltaVelB * contact.Collider2.invMass);
-            capsule2.AddTorque(contact.Normal, capsule2.ClosestPoint((Vector2)contact.Normal + capsule2.Center) - capsule2.Center, force.magnitude);
+            Vector3 force = contact.Normal * (deltaVelA / Time.deltaTime);
+            capsule2.AddTorque(capsule2.ClosestPoint((Vector2)contact.Normal + capsule2.Center) - capsule2.Center, force);
         }
         
         contact.Collider1.velocity -= deltaVelA * contact.Normal;

@@ -67,20 +67,31 @@ public class Particle2D : MonoBehaviour
         accumulatedTorque += radius * force * Mathf.Sin(angle);
     }
 
+    public void AddTorque(Vector3 radius, Vector3 force)
+    {
+        Vector3 cross = Vector3.Cross(radius, force);
+
+        accumulatedTorque += cross.z;
+    }
+    
     public void AddTorque(float radius, Vector2 forceDirection, float force)
     {
 
         float cosAngle = Vector2.Dot(forceDirection, transform.up); //something here is wrong
         //float sinAngle = dotProduct / normal.magnitude;
 
-        float dot = Vector2.Dot(forceDirection, transform.right);
+        float angle = Mathf.Acos(cosAngle);
+        
+        AddTorque(radius, force, angle);
+        
+        /*float dot = Vector2.Dot(forceDirection, transform.right);
         if (dot > 0)
         {
-            AddTorque(radius, force, cosAngle);
+
         }
         else if (dot < 0)
         {
-            AddTorque(radius, force, -cosAngle);
-        }
+            AddTorque(radius, force, -angle);
+        }*/
     }
 }

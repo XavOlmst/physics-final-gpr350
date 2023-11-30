@@ -119,4 +119,4 @@ MonoBehaviour:
   acceleration: {x: 0, y: 0}
   angularAcceleration: 0
   gravity: {x: 0, y: 0}
-  inverseMass: 50
+  inverseMass: 10
