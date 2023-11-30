@@ -25,7 +25,7 @@ public class Contact
 
 public static class CollisionDetection
 {
-    const float restitution = 0.7f;
+    const float restitution = 0.5f;
     
     public static void GetNormalAndPenetration(CircleCollider s1, CircleCollider s2, out Vector3 normal, out float penetration)
     {
