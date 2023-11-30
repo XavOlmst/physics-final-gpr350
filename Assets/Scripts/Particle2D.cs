@@ -12,11 +12,17 @@ public class Particle2D : MonoBehaviour
     public float inverseMass = 1.0f;
     public Vector2 accumulatedForces { get; private set; }
     public float accumulatedTorque { get; private set; }
-
+    public bool IsBone = false;
     public float mass => 1 / inverseMass;
 
     public void FixedUpdate()
     {
+        if (IsBone)
+        {
+            CapsuleCollider capsule = GetComponentInChildren<CapsuleCollider>();
+            DoFixedUpdate((capsule.Center - (Vector2) transform.position).magnitude, Time.deltaTime);
+        }
+        
         if(TryGetComponent(out CircleCollider sphere))
         {
             DoFixedUpdate(sphere.Radius, Time.deltaTime);

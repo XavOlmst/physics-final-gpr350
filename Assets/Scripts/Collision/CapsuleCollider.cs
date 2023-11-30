@@ -8,6 +8,7 @@ public class CapsuleCollider : PhysicsCollider
     public float LengthOffset = 0.5f;
     public Vector2 Center => transform.position;
     public float Radius = .5f;
+    public Particle2D ParentBone;
 
     public Vector2 TopPoint
     {
@@ -41,6 +42,11 @@ public class CapsuleCollider : PhysicsCollider
 
     public void AddTorque(Vector3 closestPoint, Vector3 force)
     {
+        if (ParentBone != null)
+        {
+            ParentBone.AddTorque(closestPoint - ParentBone.transform.position, force);
+        }
+        
         if (!TryGetComponent(out Particle2D particle)) return;
         //Vector2 forceB = normal * (acceleration * (invMass));
             
