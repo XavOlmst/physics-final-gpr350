@@ -20,7 +20,7 @@ public class Particle2D : MonoBehaviour
     {
         if (Bone)
         {
-            foreach (var child in Bone.ChildCapsules)
+            foreach (var child in Bone.ChildParticles)
             {
                 DoFixedUpdate((child.transform.position - transform.position).magnitude, Time.deltaTime, child);
             }
@@ -78,20 +78,27 @@ public class Particle2D : MonoBehaviour
         accumulatedForces += force;
     }
 
-    public void AddTorque(float radius, float force, float angle)
+    /*public void AddTorque(float radius, float force, float angle)
     {
         //float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
         accumulatedTorque += radius * force * Mathf.Sin(angle);
-    }
+    }*/
 
-    public void AddTorque(Vector3 radius, Vector3 force)
+    public void AddTorque(float torque)
+    {
+        accumulatedTorque += torque;
+    }
+    
+    public Vector3 AddTorque(Vector3 radius, Vector3 force)
     {
         Vector3 cross = Vector3.Cross(radius, force);
 
         accumulatedTorque += cross.z;
+
+        return force.normalized * (force.magnitude - cross.z);
     }
     
-    public void AddTorque(float radius, Vector2 forceDirection, float force)
+    /*public void AddTorque(float radius, Vector2 forceDirection, float force)
     {
 
         float cosAngle = Vector2.Dot(forceDirection, transform.up); //something here is wrong
@@ -109,6 +116,6 @@ public class Particle2D : MonoBehaviour
         else if (dot < 0)
         {
             AddTorque(radius, force, -angle);
-        }*/
-    }
+        }#1#
+    }*/
 }

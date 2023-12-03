@@ -61,4 +61,12 @@ public class PhysicsCollider : MonoBehaviour
             }
         }
     }
+
+    public void AddForce(Vector3 force)
+    {
+        if (TryGetComponent(out Particle2D particle))
+        {
+            particle.AddForce(force);
+        }
+    }
 }
