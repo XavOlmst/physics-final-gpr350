@@ -65,13 +65,13 @@ public class Gun : MonoBehaviour
             return null;
         }
 
-        Particle2D particle = obj.GetComponent<Particle2D>();
-        if (particle == null)
+        PhysicsRigidbody2D physicsRigidbody = obj.GetComponent<PhysicsRigidbody2D>();
+        if (physicsRigidbody == null)
         {
             return null;
         }
 
-        particle.velocity = FireDirection * 10.0f;
+        physicsRigidbody.velocity = FireDirection * 15.0f;
 
         return obj;
     }

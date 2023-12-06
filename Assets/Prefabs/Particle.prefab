@@ -105,6 +105,8 @@ MonoBehaviour:
   angularAcceleration: 0
   gravity: {x: 0, y: -9.81}
   inverseMass: 1
+  momentOfInertia: 1
+  Bone: {fileID: 0}
 --- !u!114 &5502741424710855362
 MonoBehaviour:
   m_ObjectHideFlags: 0
