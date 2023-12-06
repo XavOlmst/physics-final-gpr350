@@ -9,20 +9,20 @@ public class PhysicsCollider : MonoBehaviour
     {
         get
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            PhysicsRigidbody2D physicsRigidbody;
+            if (TryGetComponent(out physicsRigidbody))
             {
-                return particle.inverseMass;
+                return physicsRigidbody.inverseMass;
             }
 
             return 0;
         }
         set
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            PhysicsRigidbody2D physicsRigidbody;
+            if (TryGetComponent(out physicsRigidbody))
             {
-                particle.inverseMass = value;
+                physicsRigidbody.inverseMass = value;
             }
         }
     }
@@ -31,20 +31,20 @@ public class PhysicsCollider : MonoBehaviour
     {
         get
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            PhysicsRigidbody2D physicsRigidbody;
+            if (TryGetComponent(out physicsRigidbody))
             {
-                return particle.velocity;
+                return physicsRigidbody.velocity;
             }
 
             return Vector3.zero;
         }
         set
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            PhysicsRigidbody2D physicsRigidbody;
+            if (TryGetComponent(out physicsRigidbody))
             {
-                particle.velocity = value;
+                physicsRigidbody.velocity = value;
             }
         }
     }
@@ -54,17 +54,17 @@ public class PhysicsCollider : MonoBehaviour
         get { return transform.position; }
         set
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            PhysicsRigidbody2D physicsRigidbody;
+            if (TryGetComponent(out physicsRigidbody))
             {
-                particle.transform.position = value;
+                physicsRigidbody.transform.position = value;
             }
         }
     }
 
     public void AddForce(Vector3 force)
     {
-        if (TryGetComponent(out Particle2D particle))
+        if (TryGetComponent(out PhysicsRigidbody2D particle))
         {
             particle.AddForce(force);
         }

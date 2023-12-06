@@ -13,7 +13,7 @@ public class CapsuleCollider : PhysicsCollider
 
     public Vector2 TopPoint => (transform.up * LengthOffset);
 
-    public Vector2 BottomPoint => -(transform.up * LengthOffset);
+    public Vector2 BottomPoint => -TopPoint;
 
     public Vector3 ClosestPoint(Vector3 pos)
     {
@@ -45,10 +45,10 @@ public class CapsuleCollider : PhysicsCollider
     {
         if (ParentBone != null)
         {
-            return ParentBone.AddTorque(closestPoint, force);
+            return ParentBone.AddTorque(closestPoint + Center, force);
         }
 
-        if (TryGetComponent(out Particle2D particle))
+        if (TryGetComponent(out PhysicsRigidbody2D particle))
         {
             return particle.AddTorque(closestPoint, force);
         }

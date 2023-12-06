@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Particle2D : MonoBehaviour
+public class PhysicsRigidbody2D : MonoBehaviour
 {
     public Vector2 velocity;
     public float angularVelocity;
@@ -14,6 +14,7 @@ public class Particle2D : MonoBehaviour
     public Vector2 accumulatedForces { get; private set; }
     public float accumulatedTorque { get; private set; }
     public float mass => 1 / inverseMass;
+    public float momentOfInertia = 1;
     public PivotBone Bone;
     
     public void FixedUpdate()
@@ -22,22 +23,11 @@ public class Particle2D : MonoBehaviour
         {
             foreach (var child in Bone.ChildParticles)
             {
-                DoFixedUpdate((child.transform.position - transform.position).magnitude, Time.deltaTime, child);
+                DoFixedUpdate(Time.deltaTime, child);
             }
         }
         
-        if(TryGetComponent(out CircleCollider sphere))
-        {
-            DoFixedUpdate(sphere.Radius, Time.deltaTime);
-        }
-        else if(TryGetComponent(out CapsuleCollider capsule))
-        {
-            DoFixedUpdate(capsule.Radius, Time.deltaTime);
-        }
-        else
-        {
-            DoFixedUpdate(Time.deltaTime);
-        }
+        DoFixedUpdate(Time.deltaTime);
     }
 
     public void DoFixedUpdate(float dt)
@@ -45,20 +35,13 @@ public class Particle2D : MonoBehaviour
         acceleration = gravity + accumulatedForces * inverseMass;
         Integrator.Integrate(this, dt);
         ClearForces();
-    }
-    
-    public void DoFixedUpdate(float radius, float dt)
-    {
-        acceleration = gravity + accumulatedForces * inverseMass;
-        Integrator.Integrate(radius,this, dt);
-        ClearForces();
         ClearTorque();
     }
 
-    public void DoFixedUpdate(float radius, float dt, Particle2D childParticle)
+    public void DoFixedUpdate(float dt, PhysicsRigidbody2D childPhysicsRigidbody)
     {
         acceleration = gravity + accumulatedForces * inverseMass;
-        Integrator.Integrate(radius,this, dt, childParticle, Bone);
+        Integrator.Integrate(this, dt, childPhysicsRigidbody, Bone);
         ClearForces();
         ClearTorque();
     }

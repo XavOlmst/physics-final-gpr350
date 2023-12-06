@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Integrator
 {
-    public static void Integrate(Particle2D particle, float dt)
+    /*public static void Integrate(Particle2D particle, float dt)
     {
         particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
 
@@ -12,45 +12,44 @@ public static class Integrator
         
         particle.velocity += particle.acceleration * dt;
         particle.velocity *= Mathf.Pow(particle.damping, dt);
-    }
+    }*/
 
-    public static void Integrate(float radius, Particle2D particle, float dt)
+    public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt)
     {
-        particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
-        particle.transform.Rotate(Vector3.forward, particle.angularVelocity * dt);
+        physicsRigidbody.transform.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
+        physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
 
-        particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
+        physicsRigidbody.acceleration = physicsRigidbody.accumulatedForces * physicsRigidbody.inverseMass + physicsRigidbody.gravity;
         
-        float momentOfInertia = radius * radius / particle.inverseMass;
-        particle.angularAcceleration = particle.accumulatedTorque / momentOfInertia;
+        Debug.Assert(physicsRigidbody.momentOfInertia > 0);
+        physicsRigidbody.angularAcceleration = physicsRigidbody.accumulatedTorque / physicsRigidbody.momentOfInertia;
         
-        particle.velocity += particle.acceleration * dt;
-        particle.velocity *= Mathf.Pow(particle.damping, dt);
+        physicsRigidbody.velocity += physicsRigidbody.acceleration * dt;
+        physicsRigidbody.velocity *= Mathf.Pow(physicsRigidbody.damping, dt);
 
-        particle.angularVelocity += particle.angularAcceleration * dt;
-        particle.angularVelocity *= Mathf.Pow(particle.angularDamping, dt);
+        physicsRigidbody.angularVelocity += physicsRigidbody.angularAcceleration * dt;
+        physicsRigidbody.angularVelocity *= Mathf.Pow(physicsRigidbody.angularDamping, dt);
     }
     
-    public static void Integrate(float radius, Particle2D particle, float dt, Particle2D childParticle, PivotBone bone)
+    public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt, PhysicsRigidbody2D childPhysicsRigidbody, PivotBone bone)
     {
-        particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
-        particle.transform.Rotate(Vector3.forward, particle.angularVelocity * dt);
+        physicsRigidbody.transform.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
+        physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
 
-        particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
+        physicsRigidbody.acceleration = physicsRigidbody.accumulatedForces * physicsRigidbody.inverseMass + physicsRigidbody.gravity;
         
-        float momentOfInertia = radius * radius / particle.inverseMass;
-        particle.angularAcceleration = particle.accumulatedTorque / momentOfInertia;
+        physicsRigidbody.angularAcceleration = physicsRigidbody.accumulatedTorque / physicsRigidbody.momentOfInertia;
         
-        particle.velocity += particle.acceleration * dt;
-        particle.velocity *= Mathf.Pow(particle.damping, dt);
+        physicsRigidbody.velocity += physicsRigidbody.acceleration * dt;
+        physicsRigidbody.velocity *= Mathf.Pow(physicsRigidbody.damping, dt);
 
-        particle.angularVelocity += particle.angularAcceleration * dt;
-        particle.angularVelocity *= Mathf.Pow(particle.angularDamping, dt);
+        physicsRigidbody.angularVelocity += physicsRigidbody.angularAcceleration * dt;
+        physicsRigidbody.angularVelocity *= Mathf.Pow(physicsRigidbody.angularDamping, dt);
         
-        int childIndex = bone.ChildParticles.IndexOf(childParticle);
+        int childIndex = bone.ChildParticles.IndexOf(childPhysicsRigidbody);
         
-        var transformPoint = particle.transform.TransformPoint(childParticle.transform.localPosition);
+        var transformPoint = physicsRigidbody.transform.TransformPoint(childPhysicsRigidbody.transform.localPosition);
         bone.ChildParticles[childIndex].transform.localPosition = bone.ChildLocalPositions[childIndex];
-        particle.transform.position = transformPoint + particle.transform.up * bone.ChildLocalPositions[childIndex].magnitude;
+        physicsRigidbody.transform.position = transformPoint + physicsRigidbody.transform.up * bone.ChildLocalPositions[childIndex].magnitude;
     }
 }
