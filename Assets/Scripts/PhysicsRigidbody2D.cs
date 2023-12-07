@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,21 +16,33 @@ public class PhysicsRigidbody2D : MonoBehaviour
     public float accumulatedTorque { get; private set; }
     public float mass => 1 / inverseMass;
     public float momentOfInertia = 1;
-    public PivotBone Bone;
-    
-    public void FixedUpdate()
+    public Transform Bone;
+    public bool IsRootBone = false;
+    private Vector3 _initialLocalPos;
+
+    private void Start()
     {
         if (Bone)
+        {
+            _initialLocalPos = transform.localPosition;
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        /*if (Bone)
         {
             foreach (var child in Bone.ChildParticles)
             {
                 DoFixedUpdate(Time.deltaTime, child);
             }
-        }
+        }*/
         
         DoFixedUpdate(Time.deltaTime);
     }
 
+    public Vector3 GetInitPos() => _initialLocalPos;
+    
     public void DoFixedUpdate(float dt)
     {
         acceleration = gravity + accumulatedForces * inverseMass;
@@ -38,13 +51,13 @@ public class PhysicsRigidbody2D : MonoBehaviour
         ClearTorque();
     }
 
-    public void DoFixedUpdate(float dt, PhysicsRigidbody2D childPhysicsRigidbody)
+    /*public void DoFixedUpdate(float dt, PhysicsRigidbody2D childPhysicsRigidbody)
     {
         acceleration = gravity + accumulatedForces * inverseMass;
         Integrator.Integrate(this, dt, childPhysicsRigidbody, Bone);
         ClearForces();
         ClearTorque();
-    }
+    }*/
 
     public void ClearForces()
     {
@@ -55,17 +68,11 @@ public class PhysicsRigidbody2D : MonoBehaviour
     {
         accumulatedTorque = 0;
     }
-    
+
     public void AddForce(Vector2 force)
     {
         accumulatedForces += force;
     }
-
-    /*public void AddTorque(float radius, float force, float angle)
-    {
-        //float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
-        accumulatedTorque += radius * force * Mathf.Sin(angle);
-    }*/
 
     public void AddTorque(float torque)
     {

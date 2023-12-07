@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.XR;
 
 public class CapsuleCollider : PhysicsCollider
 {
@@ -43,14 +44,17 @@ public class CapsuleCollider : PhysicsCollider
     
     public Vector3 AddTorque(Vector3 closestPoint, Vector3 force)
     {
-        if (ParentBone != null)
+        /*if (ParentBone != null)
         {
             return ParentBone.AddTorque(closestPoint + Center, force);
-        }
+        }*/
 
         if (TryGetComponent(out PhysicsRigidbody2D particle))
         {
-            return particle.AddTorque(closestPoint, force);
+            
+            
+            return particle.Bone ? particle.AddTorque((Center - particle.Bone.position) - closestPoint, force) 
+                : particle.AddTorque(closestPoint, force);
         }
 
         return force;

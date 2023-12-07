@@ -16,8 +16,20 @@ public static class Integrator
 
     public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt)
     {
-        physicsRigidbody.transform.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
-        physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
+        if (physicsRigidbody.Bone)
+        {
+            if(physicsRigidbody.IsRootBone)
+            {
+                physicsRigidbody.Bone.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
+            }
+
+            physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
+        }
+        else
+        {
+            physicsRigidbody.transform.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
+            physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
+        }
 
         physicsRigidbody.acceleration = physicsRigidbody.accumulatedForces * physicsRigidbody.inverseMass + physicsRigidbody.gravity;
         

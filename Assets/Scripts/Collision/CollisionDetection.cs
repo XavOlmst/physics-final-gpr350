@@ -113,9 +113,27 @@ public static class CollisionDetection
         float inverseTotalInvertedMass = 1.0f / (totalInverseMass + Mathf.Epsilon);
         float deltaPosA = contact.Penetration * contact.Collider1.invMass * inverseTotalInvertedMass;
         float deltaPosB = contact.Penetration * contact.Collider2.invMass * inverseTotalInvertedMass;
-    
-        contact.Collider1.position += deltaPosA * contact.Normal;
-        contact.Collider2.position -= deltaPosB * contact.Normal;
+
+        if (contact.Collider1.TryGetComponent(out PhysicsRigidbody2D rb1) && rb1.Bone)
+        {
+            if(rb1.IsRootBone)
+                rb1.Bone.position += deltaPosA * contact.Normal;
+        }
+        else
+        {
+            contact.Collider1.position += deltaPosA * contact.Normal;
+        }
+
+        if (contact.Collider2.TryGetComponent(out PhysicsRigidbody2D rb2) && rb2.Bone)
+        {
+            if(rb2.IsRootBone)
+                rb2.Bone.position -= deltaPosB * contact.Normal;
+        }
+        else
+        {
+            contact.Collider2.position -= deltaPosB * contact.Normal;
+        }
+
 
         Vector3 relativeVelocity = (contact.Collider2.velocity - contact.Collider1.velocity);
         float closingVelocity = Vector3.Dot(relativeVelocity, contact.Normal);
@@ -130,24 +148,18 @@ public static class CollisionDetection
 
         float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider1.invMass;
         float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider2.invMass;
-
-        /*Vector3 movementForce1 = -contact.Normal * (deltaVelA / Time.deltaTime);
-        Vector3 movementForce2 = contact.Normal * (deltaVelB / Time.deltaTime);*/
         
         if (contact.Collider1.TryGetComponent(out CapsuleCollider capsule1))
         {
             Vector3 force = -contact.Normal * (deltaVelA / Time.deltaTime);
-            /*movementForce1 = */capsule1.AddTorque(capsule1.LocalClosestPoint(contact.Normal), force);
+            capsule1.AddTorque(capsule1.LocalClosestPoint(contact.Normal), force);
         }
         
         if (contact.Collider2.TryGetComponent(out CapsuleCollider capsule2))
         {
             Vector3 force = contact.Normal * (deltaVelB / Time.deltaTime);
-            /*movementForce2 = */capsule2.AddTorque(capsule2.LocalClosestPoint(contact.Normal), force);
+            capsule2.AddTorque(capsule2.LocalClosestPoint(contact.Normal), force);
         }
-        
-        /*contact.Collider1.AddForce(movementForce1);
-        contact.Collider2.AddForce(movementForce2);*/
         
         contact.Collider1.velocity -= deltaVelA * contact.Normal;
         contact.Collider2.velocity += deltaVelB * contact.Normal;

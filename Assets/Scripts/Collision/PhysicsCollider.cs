@@ -61,7 +61,7 @@ public class PhysicsCollider : MonoBehaviour
             }
         }
     }
-
+    
     public void AddForce(Vector3 force)
     {
         if (TryGetComponent(out PhysicsRigidbody2D particle))
