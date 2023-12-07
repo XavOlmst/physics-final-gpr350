@@ -24,6 +24,13 @@ public static class Integrator
             }
 
             physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
+
+            if (physicsRigidbody.ChildCapsule)
+            {
+                physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.ChildCapsule.angularVelocity * dt * physicsRigidbody.impartRatio);
+                physicsRigidbody.velocity += physicsRigidbody.ChildCapsule.velocity;
+                physicsRigidbody.ChildCapsule.velocity = Vector3.zero;
+            }
         }
         else
         {
@@ -41,27 +48,5 @@ public static class Integrator
 
         physicsRigidbody.angularVelocity += physicsRigidbody.angularAcceleration * dt;
         physicsRigidbody.angularVelocity *= Mathf.Pow(physicsRigidbody.angularDamping, dt);
-    }
-    
-    public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt, PhysicsRigidbody2D childPhysicsRigidbody, PivotBone bone)
-    {
-        physicsRigidbody.transform.position += new Vector3(physicsRigidbody.velocity.x * dt, physicsRigidbody.velocity.y * dt);
-        physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.angularVelocity * dt);
-
-        physicsRigidbody.acceleration = physicsRigidbody.accumulatedForces * physicsRigidbody.inverseMass + physicsRigidbody.gravity;
-        
-        physicsRigidbody.angularAcceleration = physicsRigidbody.accumulatedTorque / physicsRigidbody.momentOfInertia;
-        
-        physicsRigidbody.velocity += physicsRigidbody.acceleration * dt;
-        physicsRigidbody.velocity *= Mathf.Pow(physicsRigidbody.damping, dt);
-
-        physicsRigidbody.angularVelocity += physicsRigidbody.angularAcceleration * dt;
-        physicsRigidbody.angularVelocity *= Mathf.Pow(physicsRigidbody.angularDamping, dt);
-        
-        int childIndex = bone.ChildParticles.IndexOf(childPhysicsRigidbody);
-        
-        var transformPoint = physicsRigidbody.transform.TransformPoint(childPhysicsRigidbody.transform.localPosition);
-        bone.ChildParticles[childIndex].transform.localPosition = bone.ChildLocalPositions[childIndex];
-        physicsRigidbody.transform.position = transformPoint + physicsRigidbody.transform.up * bone.ChildLocalPositions[childIndex].magnitude;
     }
 }

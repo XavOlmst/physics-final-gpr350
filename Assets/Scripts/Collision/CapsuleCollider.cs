@@ -9,8 +9,6 @@ public class CapsuleCollider : PhysicsCollider
     public float LengthOffset = 0.5f;
     public Vector3 Center => transform.position;
     public float Radius = .5f;
-    public PivotBone ParentBone;
-    public List<PivotBone> ChildBones; 
 
     public Vector2 TopPoint => (transform.up * LengthOffset);
 

@@ -40,16 +40,20 @@ public class CollisionManager : MonoBehaviour
         {
             var capsule = capsules[i];
             
-            for (int j = i + 1; j < capsules.Length; j++)
+            /*for (int j = i + 1; j < capsules.Length; j++)
             {
                 var capsuleB = capsules[j];
-                if (!capsule.ChildBones.Contains(capsuleB.ParentBone) && !capsuleB.ChildBones.Contains(capsule.ParentBone))
+
+                var capsuleRB = capsule.GetComponent<PhysicsRigidbody2D>();
+                var capsuleRB2 = capsuleB.GetComponent<PhysicsRigidbody2D>();
+                
+                if (capsuleRB &&  capsuleRB2 &&  capsuleRB.Bone != capsuleRB2.Bone)
                 {
                     CollisionDetection.GetNormalAndPenetration(capsule, capsuleB, out Vector3 normal, out float penetration);
                     Contact contact = new(capsule, capsuleB, normal, penetration);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
-            }
+            }*/
 
             foreach (PlaneCollider plane in colliders)
             {

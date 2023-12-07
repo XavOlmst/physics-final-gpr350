@@ -16,7 +16,10 @@ public class PhysicsRigidbody2D : MonoBehaviour
     public float accumulatedTorque { get; private set; }
     public float mass => 1 / inverseMass;
     public float momentOfInertia = 1;
+    public float impartRatio = 0.2f;
     public Transform Bone;
+    public PhysicsRigidbody2D ChildCapsule;
+    public PhysicsRigidbody2D ParentCapsule;
     public bool IsRootBone = false;
     private Vector3 _initialLocalPos;
 
@@ -87,25 +90,18 @@ public class PhysicsRigidbody2D : MonoBehaviour
 
         return force.normalized * (force.magnitude - cross.z);
     }
-    
-    /*public void AddTorque(float radius, Vector2 forceDirection, float force)
+
+    public Vector3 GetTotalVelocity()
     {
-
-        float cosAngle = Vector2.Dot(forceDirection, transform.up); //something here is wrong
-        //float sinAngle = dotProduct / normal.magnitude;
-
-        float angle = Mathf.Acos(cosAngle);
+        PhysicsRigidbody2D prb = this;
+        Vector3 totalVelocity = Vector3.zero;
         
-        AddTorque(radius, force, angle);
-        
-        /*float dot = Vector2.Dot(forceDirection, transform.right);
-        if (dot > 0)
+        while (prb)
         {
-
+            totalVelocity += (Vector3) prb.velocity;
+            prb = prb.ParentCapsule;
         }
-        else if (dot < 0)
-        {
-            AddTorque(radius, force, -angle);
-        }#1#
-    }*/
+
+        return totalVelocity;
+    }
 }
