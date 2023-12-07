@@ -100,6 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LengthOffset: 0.5
   Radius: 0.5
+  ParentBone: {fileID: 0}
+  ChildBones: []
 --- !u!114 &665476358950075730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,3 +122,5 @@ MonoBehaviour:
   angularAcceleration: 0
   gravity: {x: 0, y: -9.81}
   inverseMass: 10
+  momentOfInertia: 1
+  Bone: {fileID: 0}

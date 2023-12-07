@@ -2,65 +2,61 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.XR;
 
 public class CapsuleCollider : PhysicsCollider
 {
     public float LengthOffset = 0.5f;
-    public Vector2 Center => transform.position;
+    public Vector3 Center => transform.position;
     public float Radius = .5f;
-    public Particle2D ParentBone;
-    public List<Particle2D> ChildBones; 
+    public PivotBone ParentBone;
+    public List<PivotBone> ChildBones; 
 
-    public Vector2 TopPoint
-    {
-        get
-        {
-            return (Vector2) (transform.up * LengthOffset);
-        }
-    }
-    
-    public Vector2 BottomPoint
-    {
-        get
-        {
-            return -(Vector2) (transform.up * LengthOffset);
-        }
-    }
+    public Vector2 TopPoint => (transform.up * LengthOffset);
 
-    public Vector2 ClosestPoint(Vector2 pos)
+    public Vector2 BottomPoint => -TopPoint;
+
+    public Vector3 ClosestPoint(Vector3 pos)
     {
         Vector3 distance = pos - Center;
 
         Vector3 up = transform.up;
+
         float localLength = Vector3.Dot(distance, up);
 
         localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
-        Vector2 closestPoint = (up * localLength);
+        Vector3 closestPoint = (up * localLength);
         
         return closestPoint + Center;
     }
 
-    public void AddTorque(Vector3 closestPoint, Vector3 force)
+    public Vector3 LocalClosestPoint(Vector3 normalizedVector)
     {
-        if (ParentBone != null)
-        {
-            ParentBone.AddTorque(closestPoint - ParentBone.transform.position, force);
-        }
-        
-        if (!TryGetComponent(out Particle2D particle)) return;
-        //Vector2 forceB = normal * (acceleration * (invMass));
-            
-        particle.AddTorque(closestPoint, force);
+        Vector3 up = transform.up;
 
+        float localLength = Vector3.Dot(normalizedVector, up);
+
+        localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
-        /*
-        if (Vector2.Dot(normal, transform.right) >= 0)
+        return (up * localLength);
+    }
+    
+    public Vector3 AddTorque(Vector3 closestPoint, Vector3 force)
+    {
+        /*if (ParentBone != null)
         {
-        }
-        else
-        {
-            particle.AddTorque(closestPoint.magnitude, normal, force);
+            return ParentBone.AddTorque(closestPoint + Center, force);
         }*/
+
+        if (TryGetComponent(out PhysicsRigidbody2D particle))
+        {
+            
+            
+            return particle.Bone ? particle.AddTorque((Center - particle.Bone.position) - closestPoint, force) 
+                : particle.AddTorque(closestPoint, force);
+        }
+
+        return force;
     }
 }

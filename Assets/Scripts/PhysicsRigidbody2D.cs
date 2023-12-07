@@ -1,6 +1,8 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Particle2D : MonoBehaviour
+public class PhysicsRigidbody2D : MonoBehaviour
 {
     public Vector2 velocity;
     public float angularVelocity;
@@ -12,45 +14,50 @@ public class Particle2D : MonoBehaviour
     public float inverseMass = 1.0f;
     public Vector2 accumulatedForces { get; private set; }
     public float accumulatedTorque { get; private set; }
-    public bool IsBone = false;
     public float mass => 1 / inverseMass;
+    public float momentOfInertia = 1;
+    public Transform Bone;
+    public bool IsRootBone = false;
+    private Vector3 _initialLocalPos;
 
-    public void FixedUpdate()
+    private void Start()
     {
-        if (IsBone)
+        if (Bone)
         {
-            CapsuleCollider capsule = GetComponentInChildren<CapsuleCollider>();
-            DoFixedUpdate((capsule.Center - (Vector2) transform.position).magnitude, Time.deltaTime);
-        }
-        
-        if(TryGetComponent(out CircleCollider sphere))
-        {
-            DoFixedUpdate(sphere.Radius, Time.deltaTime);
-        }
-        else if(TryGetComponent(out CapsuleCollider capsule))
-        {
-            DoFixedUpdate(capsule.Radius, Time.deltaTime);
-        }
-        else
-        {
-            DoFixedUpdate(Time.deltaTime);
+            _initialLocalPos = transform.localPosition;
         }
     }
 
+    public void FixedUpdate()
+    {
+        /*if (Bone)
+        {
+            foreach (var child in Bone.ChildParticles)
+            {
+                DoFixedUpdate(Time.deltaTime, child);
+            }
+        }*/
+        
+        DoFixedUpdate(Time.deltaTime);
+    }
+
+    public Vector3 GetInitPos() => _initialLocalPos;
+    
     public void DoFixedUpdate(float dt)
     {
         acceleration = gravity + accumulatedForces * inverseMass;
         Integrator.Integrate(this, dt);
         ClearForces();
-    }
-    
-    public void DoFixedUpdate(float radius, float dt)
-    {
-        acceleration = gravity + accumulatedForces * inverseMass;
-        Integrator.Integrate(radius,this, dt);
-        ClearForces();
         ClearTorque();
     }
+
+    /*public void DoFixedUpdate(float dt, PhysicsRigidbody2D childPhysicsRigidbody)
+    {
+        acceleration = gravity + accumulatedForces * inverseMass;
+        Integrator.Integrate(this, dt, childPhysicsRigidbody, Bone);
+        ClearForces();
+        ClearTorque();
+    }*/
 
     public void ClearForces()
     {
@@ -61,26 +68,27 @@ public class Particle2D : MonoBehaviour
     {
         accumulatedTorque = 0;
     }
-    
+
     public void AddForce(Vector2 force)
     {
         accumulatedForces += force;
     }
 
-    public void AddTorque(float radius, float force, float angle)
+    public void AddTorque(float torque)
     {
-        //float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
-        accumulatedTorque += radius * force * Mathf.Sin(angle);
+        accumulatedTorque += torque;
     }
-
-    public void AddTorque(Vector3 radius, Vector3 force)
+    
+    public Vector3 AddTorque(Vector3 radius, Vector3 force)
     {
         Vector3 cross = Vector3.Cross(radius, force);
 
         accumulatedTorque += cross.z;
+
+        return force.normalized * (force.magnitude - cross.z);
     }
     
-    public void AddTorque(float radius, Vector2 forceDirection, float force)
+    /*public void AddTorque(float radius, Vector2 forceDirection, float force)
     {
 
         float cosAngle = Vector2.Dot(forceDirection, transform.up); //something here is wrong
@@ -98,6 +106,6 @@ public class Particle2D : MonoBehaviour
         else if (dot < 0)
         {
             AddTorque(radius, force, -angle);
-        }*/
-    }
+        }#1#
+    }*/
 }
