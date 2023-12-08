@@ -10,9 +10,9 @@ using UnityEngine.InputSystem.XR;
 public class Contact
 {
     public Vector3 Normal;
-    public float Penetration;
-    public PhysicsCollider Collider1;
-    public PhysicsCollider Collider2;
+    public readonly float Penetration;
+    public readonly PhysicsCollider Collider1;
+    public readonly PhysicsCollider Collider2;
 
     public Contact(PhysicsCollider collider1, PhysicsCollider collider2, Vector3 normal, float penetration)
     {
@@ -23,21 +23,20 @@ public class Contact
     }
 }
 
-
 public static class CollisionDetection
 {
-    const float restitution = 0.5f;
+    private const float Restitution = 0.7f;
     
     public static void GetNormalAndPenetration(CircleCollider s1, CircleCollider s2, out Vector3 normal, out float penetration)
     {
-        Vector3 offset = s1.position - s2.position;
+        Vector3 offset = s1.Position - s2.Position;
         normal = offset / offset.magnitude;
         penetration = (s1.Radius + s2.Radius) - offset.magnitude;
     }
 
     public static void GetNormalAndPenetration(CircleCollider s, PlaneCollider p, out Vector3 normal, out float penetration)
     {
-        float distance = Vector3.Dot(s.position, p.Normal);
+        float distance = Vector3.Dot(s.Position, p.Normal);
         
         if(distance >= p.Offset)
         {
@@ -53,7 +52,6 @@ public static class CollisionDetection
 
     public static void GetNormalAndPenetration(CapsuleCollider c, PlaneCollider p, out Vector3 normal, out float penetration)
     {
-        //TODO: rework this, not functional
         normal = Vector3.zero;
         penetration = 0;
 
@@ -108,10 +106,11 @@ public static class CollisionDetection
             return;
         }
         
-        float totalInverseMass = contact.Collider1.invMass + contact.Collider2.invMass;
+        float totalInverseMass = contact.Collider1.InverseMass + contact.Collider2.InverseMass;
         float inverseTotalInvertedMass = 1.0f / (totalInverseMass + Mathf.Epsilon);
-        float deltaPosA = contact.Penetration * contact.Collider1.invMass * inverseTotalInvertedMass;
-        float deltaPosB = contact.Penetration * contact.Collider2.invMass * inverseTotalInvertedMass;
+        
+        float deltaPosA = contact.Penetration * contact.Collider1.InverseMass * inverseTotalInvertedMass;
+        float deltaPosB = contact.Penetration * contact.Collider2.InverseMass * inverseTotalInvertedMass;
 
         Vector3 contact1Vel;
         Vector3 contact2Vel;
@@ -125,8 +124,8 @@ public static class CollisionDetection
         }
         else
         {
-            contact.Collider1.position += deltaPosA * contact.Normal;
-            contact1Vel = contact.Collider1.velocity;
+            contact.Collider1.Position += deltaPosA * contact.Normal;
+            contact1Vel = contact.Collider1.Velocity;
         }
 
         if (contact.Collider2.TryGetComponent(out PhysicsRigidbody2D rb2) && rb2.Bone)
@@ -138,10 +137,9 @@ public static class CollisionDetection
         }
         else
         {
-            contact.Collider2.position -= deltaPosB * contact.Normal;
-            contact2Vel = contact.Collider2.velocity;
+            contact.Collider2.Position -= deltaPosB * contact.Normal;
+            contact2Vel = contact.Collider2.Velocity;
         }
-
         
         Vector3 relativeVelocity = (contact2Vel - contact1Vel);
         float closingVelocity = Vector3.Dot(relativeVelocity, contact.Normal);
@@ -151,12 +149,11 @@ public static class CollisionDetection
             return;
         }
         
-        float newClosingVelocity = -closingVelocity * restitution;
+        float newClosingVelocity = -closingVelocity * Restitution;
         float deltaClosingVelocity = newClosingVelocity - closingVelocity;
-
         
-        float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider1.invMass;
-        float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider2.invMass;
+        float deltaVelA = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider1.InverseMass;
+        float deltaVelB = deltaClosingVelocity * inverseTotalInvertedMass * contact.Collider2.InverseMass;
         
         if (contact.Collider1.TryGetComponent(out CapsuleCollider capsule1))
         {
@@ -170,7 +167,7 @@ public static class CollisionDetection
             capsule2.AddTorque(capsule2.LocalClosestPoint(contact.Normal), force);
         }
         
-        contact.Collider1.velocity -= deltaVelA * contact.Normal;
-        contact.Collider2.velocity += deltaVelB * contact.Normal;
+        contact.Collider1.Velocity -= deltaVelA * contact.Normal;
+        contact.Collider2.Velocity += deltaVelB * contact.Normal;
     }
 }
