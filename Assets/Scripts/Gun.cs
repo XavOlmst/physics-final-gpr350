@@ -71,7 +71,7 @@ public class Gun : MonoBehaviour
             return null;
         }
 
-        physicsRigidbody.velocity = FireDirection * 15.0f;
+        physicsRigidbody.Velocity = FireDirection * 15.0f;
 
         return obj;
     }

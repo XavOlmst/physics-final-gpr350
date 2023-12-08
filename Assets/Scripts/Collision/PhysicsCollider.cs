@@ -5,68 +5,55 @@ using UnityEngine;
 
 public class PhysicsCollider : MonoBehaviour
 {
-    public float invMass
+    public float InverseMass
     {
         get
         {
-            PhysicsRigidbody2D physicsRigidbody;
-            if (TryGetComponent(out physicsRigidbody))
+            if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
             {
-                return physicsRigidbody.inverseMass;
+                return physicsRigidbody.InverseMass;
             }
 
             return 0;
         }
         set
         {
-            PhysicsRigidbody2D physicsRigidbody;
-            if (TryGetComponent(out physicsRigidbody))
+            if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
             {
-                physicsRigidbody.inverseMass = value;
+                physicsRigidbody.InverseMass = value;
             }
         }
     }
 
-    public Vector3 velocity
+    public Vector3 Velocity
     {
         get
         {
-            PhysicsRigidbody2D physicsRigidbody;
-            if (TryGetComponent(out physicsRigidbody))
+            if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
             {
-                return physicsRigidbody.velocity;
+                return physicsRigidbody.Velocity;
             }
 
             return Vector3.zero;
         }
         set
         {
-            PhysicsRigidbody2D physicsRigidbody;
-            if (TryGetComponent(out physicsRigidbody))
+            if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
             {
-                physicsRigidbody.velocity = value;
+                physicsRigidbody.Velocity = value;
             }
         }
     }
 
-    public Vector3 position
+    public Vector3 Position
     {
         get { return transform.position; }
         set
         {
-            PhysicsRigidbody2D physicsRigidbody;
-            if (TryGetComponent(out physicsRigidbody))
+            if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
             {
                 physicsRigidbody.transform.position = value;
             }
-        }
-    }
-    
-    public void AddForce(Vector3 force)
-    {
-        if (TryGetComponent(out PhysicsRigidbody2D particle))
-        {
-            particle.AddForce(force);
         }
     }
 }

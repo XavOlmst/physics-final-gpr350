@@ -17,11 +17,9 @@ public class CapsuleCollider : PhysicsCollider
     public Vector3 ClosestPoint(Vector3 pos)
     {
         Vector3 distance = pos - Center;
-
         Vector3 up = transform.up;
-
+        
         float localLength = Vector3.Dot(distance, up);
-
         localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
         Vector3 closestPoint = (up * localLength);
@@ -34,7 +32,6 @@ public class CapsuleCollider : PhysicsCollider
         Vector3 up = transform.up;
 
         float localLength = Vector3.Dot(normalizedVector, up);
-
         localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
         return (up * localLength);
@@ -42,15 +39,8 @@ public class CapsuleCollider : PhysicsCollider
     
     public Vector3 AddTorque(Vector3 closestPoint, Vector3 force)
     {
-        /*if (ParentBone != null)
-        {
-            return ParentBone.AddTorque(closestPoint + Center, force);
-        }*/
-
         if (TryGetComponent(out PhysicsRigidbody2D particle))
         {
-            
-            
             return particle.Bone ? particle.AddTorque((Center - particle.Bone.position) - closestPoint, force) 
                 : particle.AddTorque(closestPoint, force);
         }

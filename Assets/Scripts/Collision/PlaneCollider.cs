@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class PlaneCollider : PhysicsCollider
 {
-    public Vector3 Normal
-    {
-        get
-        {
-            return transform.up;
-        }
-    }
+    public Vector3 Normal => transform.up;
+
     public float Offset
     {
         get
