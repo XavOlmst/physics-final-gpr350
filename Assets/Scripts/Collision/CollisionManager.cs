@@ -13,6 +13,8 @@ namespace Collision
             for (int i = 0; i < spheres.Length; i++)
             {
                 CircleCollider sphere = spheres[i];
+                
+                // Sphere on sphere
                 for (int j = i + 1; j < spheres.Length; j++)
                 {
                     CircleCollider sphereB = spheres[j];
@@ -20,7 +22,8 @@ namespace Collision
                     Contact contact = new(sphere, sphereB, normal, penetration);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
-
+                
+                // Sphere on plane
                 foreach (PlaneCollider planeCollider in colliders)
                 {
                     CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Vector3 normal, out float penetration);
@@ -28,6 +31,7 @@ namespace Collision
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
 
+                // Sphere on capsule
                 foreach (CapsuleCollider capsule in capsules)
                 {
                     CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Vector3 normal, out float penetration);
@@ -40,10 +44,12 @@ namespace Collision
             {
                 var capsuleA = capsules[i];
             
+                // Capsule on capsule
                 for (int j = i + 1; j < capsules.Length; j++)
                 {
                     var capsuleB = capsules[j];
 
+                    // Make sure the ragdoll cannot collide with itself
                     if (!capsuleA.CompareTag("Ragdoll") || !capsuleB.CompareTag("Ragdoll"))
                     {
                         CollisionDetection.GetNormalAndPenetration(capsuleA, capsuleB, out Vector3 normal, out float penetration);
@@ -52,6 +58,7 @@ namespace Collision
                     }
                 }
 
+                // Capsule on plane
                 foreach (PlaneCollider plane in colliders)
                 {
                     CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Vector3 normal, out float penetration);
