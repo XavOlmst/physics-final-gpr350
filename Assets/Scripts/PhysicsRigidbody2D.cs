@@ -18,7 +18,7 @@ public class PhysicsRigidbody2D : MonoBehaviour
     public float MomentOfInertia = 1;
     public float ImpartRatio = 0.2f;
     public Transform Bone;
-    public PhysicsRigidbody2D ChildCapsule;
+    public List<PhysicsRigidbody2D> ChildCapsule;
     public PhysicsRigidbody2D ParentCapsule;
     public bool IsRootBone = false;
 

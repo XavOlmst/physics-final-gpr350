@@ -15,11 +15,14 @@ public static class Integrator
 
             physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.AngularVelocity * dt);
 
-            if (physicsRigidbody.ChildCapsule)
+            if (physicsRigidbody.ChildCapsule.Count > 0)
             {
-                physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.ChildCapsule.AngularVelocity * dt * physicsRigidbody.ImpartRatio);
-                physicsRigidbody.Velocity += physicsRigidbody.ChildCapsule.Velocity;
-                physicsRigidbody.ChildCapsule.Velocity = Vector3.zero;
+                foreach (var childCapsule in physicsRigidbody.ChildCapsule)
+                {
+                    physicsRigidbody.Bone.Rotate(Vector3.forward, childCapsule.AngularVelocity * dt * physicsRigidbody.ImpartRatio);
+                    physicsRigidbody.Velocity += childCapsule.Velocity;  
+                    childCapsule.Velocity = Vector3.zero;
+                }
             }
         }
         else

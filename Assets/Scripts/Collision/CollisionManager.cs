@@ -38,27 +38,24 @@ namespace Collision
 
             for (var i = 0; i < capsules.Length; i++)
             {
-                var capsule = capsules[i];
+                var capsuleA = capsules[i];
             
-                /*for (int j = i + 1; j < capsules.Length; j++)
-            {
-                var capsuleB = capsules[j];
-
-                var capsuleRB = capsule.GetComponent<PhysicsRigidbody2D>();
-                var capsuleRB2 = capsuleB.GetComponent<PhysicsRigidbody2D>();
-                
-                if (capsuleRB &&  capsuleRB2 &&  capsuleRB.Bone != capsuleRB2.Bone)
+                for (int j = i + 1; j < capsules.Length; j++)
                 {
-                    CollisionDetection.GetNormalAndPenetration(capsule, capsuleB, out Vector3 normal, out float penetration);
-                    Contact contact = new(capsule, capsuleB, normal, penetration);
-                    CollisionDetection.ApplyCollisionResolution(contact);
+                    var capsuleB = capsules[j];
+
+                    if (!capsuleA.CompareTag("Ragdoll") || !capsuleB.CompareTag("Ragdoll"))
+                    {
+                        CollisionDetection.GetNormalAndPenetration(capsuleA, capsuleB, out Vector3 normal, out float penetration);
+                        Contact contact = new(capsuleA, capsuleB, normal, penetration);
+                        CollisionDetection.ApplyCollisionResolution(contact);
+                    }
                 }
-            }*/
 
                 foreach (PlaneCollider plane in colliders)
                 {
-                    CollisionDetection.GetNormalAndPenetration(capsule, plane, out Vector3 normal, out float penetration);
-                    Contact contact = new(capsule, plane, normal, penetration);
+                    CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Vector3 normal, out float penetration);
+                    Contact contact = new(capsuleA, plane, normal, penetration);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
             }
