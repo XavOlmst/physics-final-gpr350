@@ -1,63 +1,50 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsCollider : MonoBehaviour
+namespace Collision
 {
-    public float invMass
+    public class PhysicsCollider : MonoBehaviour
     {
-        get
+        public float InverseMass
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            get
             {
-                return particle.inverseMass;
-            }
+                if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
+                {
+                    return physicsRigidbody.InverseMass;
+                }
 
-            return 0;
-        }
-        set
-        {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
-            {
-                particle.inverseMass = value;
+                return 0;
             }
-        }
-    }
-
-    public Vector3 velocity
-    {
-        get
-        {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            set
             {
-                return particle.velocity;
-            }
-
-            return Vector3.zero;
-        }
-        set
-        {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
-            {
-                particle.velocity = value;
+                if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
+                {
+                    physicsRigidbody.InverseMass = value;
+                }
             }
         }
-    }
 
-    public Vector3 position
-    {
-        get { return transform.position; }
-        set
+        public Vector3 Velocity
         {
-            Particle2D particle;
-            if (TryGetComponent(out particle))
+            get => TryGetComponent(out PhysicsRigidbody2D physicsRigidbody) ? physicsRigidbody.Velocity : Vector3.zero;
+            set
             {
-                particle.transform.position = value;
+                if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
+                {
+                    physicsRigidbody.Velocity = value;
+                }
+            }
+        }
+
+        public Vector3 Position
+        {
+            get => transform.position;
+            set
+            {
+                if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
+                {
+                    physicsRigidbody.transform.position = value;
+                }
             }
         }
     }

@@ -1,23 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaneCollider : PhysicsCollider
+namespace Collision
 {
-    public Vector3 Normal
+    public class PlaneCollider : PhysicsCollider
     {
-        get
+        public Vector3 Normal => transform.up;
+
+        public float Offset
         {
-            return transform.up;
-        }
-    }
-    public float Offset
-    {
-        get
-        {
-            Vector3 n = Normal;
-            float d = Vector3.Dot(n, transform.position);
-            return d;
+            get
+            {
+                Vector3 n = Normal;
+                float d = Vector3.Dot(n, transform.position);
+                return d;
+            }
         }
     }
 }

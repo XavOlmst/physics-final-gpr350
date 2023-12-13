@@ -4,30 +4,50 @@ using UnityEngine;
 
 public static class Integrator
 {
-    public static void Integrate(Particle2D particle, float dt)
+    public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt)
     {
-        particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
+        // Objects with pivots
+        if (physicsRigidbody.Bone)
+        {
+            // Only the root bone can move as a normal particle
+            if(physicsRigidbody.IsRootBone)
+            {
+                physicsRigidbody.Bone.position += new Vector3(physicsRigidbody.Velocity.x * dt, physicsRigidbody.Velocity.y * dt);
+            }
 
-        particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
+            // Rotate bone with angular velocity
+            physicsRigidbody.Bone.Rotate(Vector3.forward, physicsRigidbody.AngularVelocity * dt);
+
+            // Apply a portion of the rotation to children
+            if (physicsRigidbody.ChildCapsule.Count > 0)
+            {
+                foreach (var childCapsule in physicsRigidbody.ChildCapsule)
+                {
+                    physicsRigidbody.Bone.Rotate(Vector3.forward, childCapsule.AngularVelocity * dt * physicsRigidbody.ImpartRatio);
+                    physicsRigidbody.Velocity += childCapsule.Velocity;  
+                    childCapsule.Velocity = Vector3.zero;
+                }
+            }
+        }
+        else // Normal objects
+        {
+            physicsRigidbody.transform.position += new Vector3(physicsRigidbody.Velocity.x * dt, physicsRigidbody.Velocity.y * dt);
+            physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.AngularVelocity * dt);
+        }
+
+        // Adjust acceleration
+        physicsRigidbody.Acceleration = physicsRigidbody.AccumulatedForces * physicsRigidbody.InverseMass + physicsRigidbody.Gravity;
         
-        particle.velocity += particle.acceleration * dt;
-        particle.velocity *= Mathf.Pow(particle.damping, dt);
-    }
-
-    public static void Integrate(float radius, Particle2D particle, float dt)
-    {
-        particle.transform.position += new Vector3(particle.velocity.x * dt, particle.velocity.y * dt);
-        particle.transform.Rotate(Vector3.forward, particle.angularVelocity * dt);
-
-        particle.acceleration = particle.accumulatedForces * particle.inverseMass + particle.gravity;
+        // Adjust angular acceleration
+        Debug.Assert(physicsRigidbody.MomentOfInertia > 0);
+        physicsRigidbody.AngularAcceleration = physicsRigidbody.AccumulatedTorque / physicsRigidbody.MomentOfInertia;
         
-        float momentOfInertia = radius * radius / particle.inverseMass;
-        particle.angularAcceleration = particle.accumulatedTorque / momentOfInertia; //TODO: Ask Kevin for help (might be doing right now?)
-        
-        particle.velocity += particle.acceleration * dt;
-        particle.velocity *= Mathf.Pow(particle.damping, dt);
+        // Adjust velocity by acceleration
+        physicsRigidbody.Velocity += physicsRigidbody.Acceleration * dt;
+        physicsRigidbody.Velocity *= Mathf.Pow(physicsRigidbody.Damping, dt);
 
-        particle.angularVelocity += particle.angularAcceleration * dt;
-        particle.angularVelocity *= Mathf.Pow(particle.angularDamping, dt);
+        // Adjust angular velocity by angular acceleration
+        physicsRigidbody.AngularVelocity += physicsRigidbody.AngularAcceleration * dt;
+        physicsRigidbody.AngularVelocity *= Mathf.Pow(physicsRigidbody.AngularDamping, dt);
     }
 }

@@ -112,11 +112,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ee629fcb5944caf8573fac0c676baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0}
-  angularVelocity: 0
-  damping: 0.9
-  angularDamping: 0.9
-  acceleration: {x: 0, y: 0}
-  angularAcceleration: 0
-  gravity: {x: 0, y: -9.81}
-  inverseMass: 50
+  Velocity: {x: 0, y: 0, z: 0}
+  AngularVelocity: 0
+  Damping: 0.7
+  AngularDamping: 0.6
+  Acceleration: {x: 0, y: 0, z: 0}
+  AngularAcceleration: 0
+  Gravity: {x: 0, y: -9.8, z: 0}
+  InverseMass: 1
+  MomentOfInertia: 0.1
+  ImpartRatio: 0.2
+  Bone: {fileID: 0}
+  ChildCapsule: []
+  ParentCapsule: {fileID: 0}
+  IsRootBone: 0

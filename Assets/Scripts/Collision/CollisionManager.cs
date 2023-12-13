@@ -1,58 +1,72 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class CollisionManager : MonoBehaviour
+namespace Collision
 {
-    private void FixedUpdate()
+    public class CollisionManager : MonoBehaviour
     {
-        CircleCollider[] spheres = FindObjectsOfType<CircleCollider>();
-        PlaneCollider[] colliders = FindObjectsOfType<PlaneCollider>();
-        CapsuleCollider[] capsules = FindObjectsOfType<CapsuleCollider>();
+        private PlaneCollider[] _colliders;
 
-        for (int i = 0; i < spheres.Length; i++)
+        private void Start()
         {
-            CircleCollider sphere = spheres[i];
-            for (int j = i + 1; j < spheres.Length; j++)
-            {
-                CircleCollider sphereB = spheres[j];
-                CollisionDetection.GetNormalAndPenetration(sphere, sphereB, out Vector3 normal, out float penetration);
-                Contact contact = new(sphere, sphereB, normal, penetration);
-                CollisionDetection.ApplyCollisionResolution(contact);
-            }
-
-            foreach (PlaneCollider planeCollider in colliders)
-            {
-                CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Vector3 normal, out float penetration);
-                Contact contact = new(sphere, planeCollider, normal, penetration);
-                CollisionDetection.ApplyCollisionResolution(contact);
-            }
-
-            foreach (CapsuleCollider capsule in capsules)
-            {
-                CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Vector3 normal, out float penetration);
-                Contact contact = new(sphere, capsule, normal, penetration);
-                CollisionDetection.ApplyCollisionResolution(contact);
-            }
+            _colliders = FindObjectsOfType<PlaneCollider>();
         }
 
-        for (var i = 0; i < capsules.Length; i++)
+        private void FixedUpdate()
         {
-            var capsule = capsules[i];
-            
-            for (int j = i + 1; j < capsules.Length; j++)
+            CircleCollider[] spheres = FindObjectsOfType<CircleCollider>();
+            CapsuleCollider[] capsules = FindObjectsOfType<CapsuleCollider>();
+
+            for (int i = 0; i < spheres.Length; i++)
             {
-                var capsuleB = capsules[j];
-                CollisionDetection.GetNormalAndPenetration(capsule, capsuleB, out Vector3 normal, out float penetration);
-                Contact contact = new(capsule, capsuleB, normal, penetration);
-                CollisionDetection.ApplyCollisionResolution(contact);
+                CircleCollider sphere = spheres[i];
+                
+                // Sphere on sphere
+                for (int j = i + 1; j < spheres.Length; j++)
+                {
+                    CircleCollider sphereB = spheres[j];
+                    CollisionDetection.GetNormalAndPenetration(sphere, sphereB, out Contact contact);
+                    CollisionDetection.ApplyCollisionResolution(contact);
+                }
+                
+                // Sphere on plane
+                foreach (PlaneCollider planeCollider in _colliders)
+                {
+                    CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Contact contact);
+                    CollisionDetection.ApplyCollisionResolution(contact);
+                }
+
+                // Sphere on capsule
+                foreach (CapsuleCollider capsule in capsules)
+                {
+                    CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Contact contact);
+                    CollisionDetection.ApplyCollisionResolution(contact);
+                }
             }
 
-            foreach (PlaneCollider plane in colliders)
+            for (var i = 0; i < capsules.Length; i++)
             {
-                CollisionDetection.GetNormalAndPenetration(capsule, plane, out Vector3 normal, out float penetration);
-                Contact contact = new(capsule, plane, normal, penetration);
-                CollisionDetection.ApplyCollisionResolution(contact);
+                var capsuleA = capsules[i];
+            
+                // Capsule on capsule
+                for (int j = i + 1; j < capsules.Length; j++)
+                {
+                    var capsuleB = capsules[j];
+
+                    // Make sure the ragdoll cannot collide with itself
+                    if (!capsuleA.CompareTag("Ragdoll") || !capsuleB.CompareTag("Ragdoll"))
+                    {
+                        CollisionDetection.GetNormalAndPenetration(capsuleA, capsuleB, out Contact contact);
+                        CollisionDetection.ApplyCollisionResolution(contact);
+                    }
+                }
+
+                // Capsule on plane
+                foreach (PlaneCollider plane in _colliders)
+                {
+                    CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Contact contact);
+                    CollisionDetection.ApplyCollisionResolution(contact);
+                }
             }
         }
     }

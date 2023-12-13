@@ -1,59 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class CapsuleCollider : PhysicsCollider
+namespace Collision
 {
-    public float LengthOffset = 0.5f;
-    public Vector2 Center => transform.position;
-    public float Radius = .5f;
-
-    public Vector2 TopPoint
+    public class CapsuleCollider : PhysicsCollider
     {
-        get
+        public float LengthOffset = 0.5f;
+        public Vector3 Center => transform.position;
+        public float Radius = .5f;
+
+        public Vector3 TopPoint => (transform.up * LengthOffset);
+
+        public Vector3 BottomPoint => -TopPoint;
+
+        public Vector3 ClosestPoint(Vector3 pos)
         {
-            return (Vector2) (transform.up * LengthOffset);
-        }
-    }
-    
-    public Vector2 BottomPoint
-    {
-        get
-        {
-            return -(Vector2) (transform.up * LengthOffset);
-        }
-    }
-
-    public Vector2 ClosestPoint(Vector2 pos)
-    {
-        Vector3 distance = pos - Center;
-
-        Vector3 up = transform.up;
-        float localLength = Vector3.Dot(distance, up);
-
-        localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
+            Vector3 distance = pos - Center;
+            Vector3 up = transform.up;
         
-        Vector2 closestPoint = (up * localLength);
+            float localLength = Vector3.Dot(distance, up);
+            localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
-        return closestPoint + Center;
-    }
-
-    public void AddTorque(Vector3 normal, Vector3 closestPoint, float force)
-    {
-        if (!TryGetComponent(out Particle2D particle)) return;
-        //Vector2 forceB = normal * (acceleration * (invMass));
-            
-        particle.AddTorque(closestPoint.magnitude, normal, force);
-
+            Vector3 closestPoint = (up * localLength);
         
-        /*
-        if (Vector2.Dot(normal, transform.right) >= 0)
-        {
+            return closestPoint + Center;
         }
-        else
+        
+        /// <summary>
+        /// Adds torque to a capsule if it has a rigidbody
+        /// </summary>
+        /// <param name="closestPoint"></param>
+        /// <param name="force"></param>
+        /// <returns>returns force not used for rotation</returns>
+        public Vector3 AddTorque(Vector3 closestPoint, Vector3 force)
         {
-            particle.AddTorque(closestPoint.magnitude, normal, force);
-        }*/
+            if (TryGetComponent(out PhysicsRigidbody2D particle))
+            {
+                return particle.Bone ? particle.AddTorque((Center - particle.Bone.position) - closestPoint, force) 
+                    : particle.AddTorque(closestPoint, force);
+            }
+
+            return force;
+        }
     }
 }
