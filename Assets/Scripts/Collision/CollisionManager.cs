@@ -1,13 +1,20 @@
+using System;
 using UnityEngine;
 
 namespace Collision
 {
     public class CollisionManager : MonoBehaviour
     {
+        private PlaneCollider[] _colliders;
+
+        private void Start()
+        {
+            _colliders = FindObjectsOfType<PlaneCollider>();
+        }
+
         private void FixedUpdate()
         {
             CircleCollider[] spheres = FindObjectsOfType<CircleCollider>();
-            PlaneCollider[] colliders = FindObjectsOfType<PlaneCollider>();
             CapsuleCollider[] capsules = FindObjectsOfType<CapsuleCollider>();
 
             for (int i = 0; i < spheres.Length; i++)
@@ -18,24 +25,21 @@ namespace Collision
                 for (int j = i + 1; j < spheres.Length; j++)
                 {
                     CircleCollider sphereB = spheres[j];
-                    CollisionDetection.GetNormalAndPenetration(sphere, sphereB, out Vector3 normal, out float penetration);
-                    Contact contact = new(sphere, sphereB, normal, penetration);
+                    CollisionDetection.GetNormalAndPenetration(sphere, sphereB, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
                 
                 // Sphere on plane
-                foreach (PlaneCollider planeCollider in colliders)
+                foreach (PlaneCollider planeCollider in _colliders)
                 {
-                    CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Vector3 normal, out float penetration);
-                    Contact contact = new(sphere, planeCollider, normal, penetration);
+                    CollisionDetection.GetNormalAndPenetration(sphere, planeCollider, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
 
                 // Sphere on capsule
                 foreach (CapsuleCollider capsule in capsules)
                 {
-                    CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Vector3 normal, out float penetration);
-                    Contact contact = new(sphere, capsule, normal, penetration);
+                    CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
             }
@@ -52,17 +56,15 @@ namespace Collision
                     // Make sure the ragdoll cannot collide with itself
                     if (!capsuleA.CompareTag("Ragdoll") || !capsuleB.CompareTag("Ragdoll"))
                     {
-                        CollisionDetection.GetNormalAndPenetration(capsuleA, capsuleB, out Vector3 normal, out float penetration);
-                        Contact contact = new(capsuleA, capsuleB, normal, penetration);
+                        CollisionDetection.GetNormalAndPenetration(capsuleA, capsuleB, out Contact contact);
                         CollisionDetection.ApplyCollisionResolution(contact);
                     }
                 }
 
                 // Capsule on plane
-                foreach (PlaneCollider plane in colliders)
+                foreach (PlaneCollider plane in _colliders)
                 {
-                    CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Vector3 normal, out float penetration);
-                    Contact contact = new(capsuleA, plane, normal, penetration);
+                    CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
             }

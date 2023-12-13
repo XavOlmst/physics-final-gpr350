@@ -8,9 +8,9 @@ namespace Collision
         public Vector3 Center => transform.position;
         public float Radius = .5f;
 
-        public Vector2 TopPoint => (transform.up * LengthOffset);
+        public Vector3 TopPoint => (transform.up * LengthOffset);
 
-        public Vector2 BottomPoint => -TopPoint;
+        public Vector3 BottomPoint => -TopPoint;
 
         public Vector3 ClosestPoint(Vector3 pos)
         {
@@ -24,17 +24,13 @@ namespace Collision
         
             return closestPoint + Center;
         }
-
-        public Vector3 LocalClosestPoint(Vector3 normalizedVector)
-        {
-            Vector3 up = transform.up;
-
-            float localLength = Vector3.Dot(normalizedVector, up);
-            localLength = Mathf.Clamp(localLength, -LengthOffset, LengthOffset);
         
-            return (up * localLength);
-        }
-    
+        /// <summary>
+        /// Adds torque to a capsule if it has a rigidbody
+        /// </summary>
+        /// <param name="closestPoint"></param>
+        /// <param name="force"></param>
+        /// <returns>returns force not used for rotation</returns>
         public Vector3 AddTorque(Vector3 closestPoint, Vector3 force)
         {
             if (TryGetComponent(out PhysicsRigidbody2D particle))

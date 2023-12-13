@@ -26,15 +26,7 @@ namespace Collision
 
         public Vector3 Velocity
         {
-            get
-            {
-                if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
-                {
-                    return physicsRigidbody.Velocity;
-                }
-
-                return Vector3.zero;
-            }
+            get => TryGetComponent(out PhysicsRigidbody2D physicsRigidbody) ? physicsRigidbody.Velocity : Vector3.zero;
             set
             {
                 if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))
@@ -46,7 +38,7 @@ namespace Collision
 
         public Vector3 Position
         {
-            get { return transform.position; }
+            get => transform.position;
             set
             {
                 if (TryGetComponent(out PhysicsRigidbody2D physicsRigidbody))

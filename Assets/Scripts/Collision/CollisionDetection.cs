@@ -8,13 +8,18 @@ namespace Collision
         public readonly float Penetration;
         public readonly PhysicsCollider Collider1;
         public readonly PhysicsCollider Collider2;
+        public readonly Vector3 Collider1ContactPoint;
+        public readonly Vector3 Collider2ContactPoint;
 
-        public Contact(PhysicsCollider collider1, PhysicsCollider collider2, Vector3 normal, float penetration)
+        public Contact(PhysicsCollider collider1, PhysicsCollider collider2, Vector3 normal, 
+            float penetration, Vector3 collider1ContactPoint, Vector3 collider2ContactPoint)
         {
             Collider1 = collider1;
             Collider2 = collider2;
             Normal = normal;
             Penetration = penetration;
+            Collider1ContactPoint = collider1ContactPoint;
+            Collider2ContactPoint = collider2ContactPoint;
         }
     }
 
@@ -22,17 +27,21 @@ namespace Collision
     {
         private const float Restitution = 0.7f;
     
-        public static void GetNormalAndPenetration(CircleCollider s1, CircleCollider s2, out Vector3 normal, out float penetration)
+        public static void GetNormalAndPenetration(CircleCollider s1, CircleCollider s2, out Contact contact)
         {
             Vector3 offset = s1.Position - s2.Position;
-            normal = offset / offset.magnitude;
-            penetration = (s1.Radius + s2.Radius) - offset.magnitude;
+            Vector3 normal = offset / offset.magnitude;
+            float penetration = (s1.Radius + s2.Radius) - offset.magnitude;
+
+            contact = new(s1, s2, normal, penetration, s1.Center, s2.Center);
         }
 
-        public static void GetNormalAndPenetration(CircleCollider s, PlaneCollider p, out Vector3 normal, out float penetration)
+        public static void GetNormalAndPenetration(CircleCollider s, PlaneCollider p, out Contact contact)
         {
             float distance = Vector3.Dot(s.Position, p.Normal);
-        
+            float penetration;
+            Vector3 normal;
+            
             if(distance >= p.Offset)
             {
                 penetration = (s.Radius + p.Offset) - distance;
@@ -43,55 +52,71 @@ namespace Collision
                 penetration = (s.Radius - p.Offset) + distance;
                 normal = -p.Normal;
             }
+            
+            contact = new(s, p, normal, penetration, s.Center, p.Normal);
         }
 
-        public static void GetNormalAndPenetration(CapsuleCollider c, PlaneCollider p, out Vector3 normal, out float penetration)
+        public static void GetNormalAndPenetration(CapsuleCollider c, PlaneCollider p, out Contact contact)
         {
-            normal = Vector3.zero;
-            penetration = 0;
-
+            Vector3 normal;
+            float penetration = 0;
+            Vector3 capsuleContactPoint;
+            
             float centerDistance = Vector3.Dot(c.Center, p.Normal);
         
-            float bDist = centerDistance + Vector3.Dot(c.BottomPoint, p.Normal);
-            float tDist = centerDistance + Vector3.Dot(c.TopPoint, p.Normal);
+            float bottomDistance = centerDistance + Vector3.Dot(c.BottomPoint, p.Normal);
+            float topDistance = centerDistance + Vector3.Dot(c.TopPoint, p.Normal);
 
+            float distance;
+
+            if (bottomDistance > topDistance)
+            {
+                distance = bottomDistance;
+                capsuleContactPoint = c.Center + c.BottomPoint;
+            }
+            else
+            {
+                distance = topDistance;
+                capsuleContactPoint = c.Center + c.TopPoint;
+            }
+            
             if (centerDistance >= p.Offset)
             {
-                float bottomDistance = (c.Radius + p. Offset) - bDist;
-                float topDistance = (c.Radius + p.Offset) - tDist;
-        
-                penetration = Mathf.Max(bottomDistance, topDistance);
+                penetration = (c.Radius + p.Offset) - distance;
                 normal = p.Normal;
             }
             else
             {
-                float bottomDistance = (c.Radius - p. Offset) + bDist;
-                float topDistance = (c.Radius - p.Offset) + tDist;
-        
-                penetration = Mathf.Max(bottomDistance, topDistance);
+                penetration = (c.Radius - p.Offset) + distance;
                 normal = -p.Normal;
             }
+
+            contact = new(c, p, normal, penetration, capsuleContactPoint, p.Normal);
         }
     
-        public static void GetNormalAndPenetration(CircleCollider s, CapsuleCollider c, out Vector3 normal, out float penetration)
+        public static void GetNormalAndPenetration(CircleCollider s, CapsuleCollider c, out Contact contact)
         {
-            normal = Vector2.zero;
-            penetration = 0;
+            Vector3 normal;
+            float penetration = 0;
 
             Vector2 closestPoint = c.ClosestPoint(s.Center);
             Vector2 offset = (Vector2) s.Center - closestPoint;
             normal = offset.normalized;
 
             penetration = (s.Radius + c.Radius) - offset.magnitude;
+
+            contact = new(s, c, normal, penetration, s.Center, closestPoint);
         }
     
-        public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Vector3 normal, out float penetration)
+        public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Contact contact)
         {
             Vector2 c2Closest = c2.ClosestPoint(c1.Center);
             Vector2 c1Closest = c1.ClosestPoint(c2Closest);
             Vector2 offset = c1Closest - c2Closest;
-            normal = offset.normalized;
-            penetration = (c1.Radius + c2.Radius) - offset.magnitude;
+            Vector3 normal = offset.normalized;
+            float penetration = (c1.Radius + c2.Radius) - offset.magnitude;
+
+            contact = new(c1, c2, normal, penetration, c1Closest, c2Closest);
         }
     
         public static void ApplyCollisionResolution(Contact contact)
@@ -153,13 +178,13 @@ namespace Collision
             if (contact.Collider1.TryGetComponent(out CapsuleCollider capsule1))
             {
                 Vector3 force = -contact.Normal * (deltaVelA / Time.deltaTime);
-                capsule1.AddTorque(capsule1.LocalClosestPoint(contact.Normal), force);
+                capsule1.AddTorque(capsule1.ClosestPoint(contact.Collider1ContactPoint) - capsule1.Center, force);
             }
         
             if (contact.Collider2.TryGetComponent(out CapsuleCollider capsule2))
             {
                 Vector3 force = contact.Normal * (deltaVelB / Time.deltaTime);
-                capsule2.AddTorque(capsule2.LocalClosestPoint(contact.Normal), force);
+                capsule2.AddTorque(capsule2.ClosestPoint(contact.Collider2ContactPoint) - capsule2.Center, force);
             }
         
             contact.Collider1.Velocity -= deltaVelA * contact.Normal;

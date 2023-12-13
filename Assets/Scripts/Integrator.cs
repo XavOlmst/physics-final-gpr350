@@ -29,8 +29,7 @@ public static class Integrator
                 }
             }
         }
-        else
-        // Normal objects
+        else // Normal objects
         {
             physicsRigidbody.transform.position += new Vector3(physicsRigidbody.Velocity.x * dt, physicsRigidbody.Velocity.y * dt);
             physicsRigidbody.transform.Rotate(Vector3.forward, physicsRigidbody.AngularVelocity * dt);

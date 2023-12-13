@@ -289,6 +289,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -6034438818361066306, guid: 9c4692a3184f446e4a379adef7110d76, type: 3}
+      propertyPath: Weapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6034438818361066306, guid: 9c4692a3184f446e4a379adef7110d76, type: 3}
+      propertyPath: Weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 8884174885331103408, guid: 1979970f487c9426688fdb3e1f7b5493, type: 3}
+    - target: {fileID: -6034438818361066306, guid: 9c4692a3184f446e4a379adef7110d76, type: 3}
+      propertyPath: Weapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 1517227914728567194, guid: 389b23f5c69232442a1926585859f11a, type: 3}
+    - target: {fileID: -6034438818361066306, guid: 9c4692a3184f446e4a379adef7110d76, type: 3}
       propertyPath: weapons.Array.data[4]
       value: 
       objectReference: {fileID: 8884174885331103408, guid: 93d7955655254234e9905ec1f63bd2c7, type: 3}

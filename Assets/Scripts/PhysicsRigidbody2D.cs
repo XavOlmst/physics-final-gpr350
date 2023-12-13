@@ -27,6 +27,16 @@ public class PhysicsRigidbody2D : MonoBehaviour
         DoFixedUpdate(Time.deltaTime);
     }
     
+    //Inline functions
+    public void AddForce(Vector3 force) => AccumulatedForces += force;
+    
+    public void AddTorque(float torque) => AccumulatedTorque += torque;
+    
+    private void ClearForces() => AccumulatedForces = Vector3.zero;
+    
+    private void ClearTorque() => AccumulatedTorque = 0;
+    
+    
     private void DoFixedUpdate(float dt)
     {
         Acceleration = Gravity + AccumulatedForces * InverseMass;
@@ -35,28 +45,6 @@ public class PhysicsRigidbody2D : MonoBehaviour
         ClearTorque();
     }
 
-    private void ClearForces()
-    {
-        AccumulatedForces = Vector3
-            .zero;
-    }
-
-    private void ClearTorque()
-    {
-        AccumulatedTorque = 0;
-    }
-
-    public void AddForce(Vector3
-            force)
-    {
-        AccumulatedForces += force;
-    }
-
-    public void AddTorque(float torque)
-    {
-        AccumulatedTorque += torque;
-    }
-    
     public Vector3 AddTorque(Vector3 radius, Vector3 force)
     {
         Vector3 cross = Vector3.Cross(radius, force);
