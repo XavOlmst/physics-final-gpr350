@@ -6,6 +6,17 @@ public static class Integrator
 {
     public static void Integrate(PhysicsRigidbody2D physicsRigidbody, float dt)
     {
+        // Overall this logic works
+        // But I think you should have treated the root a a regular object and just handled it as a rigid body
+        // Collisions inside the ragdoll could have solely angular velocity/acceleration and rotation
+        // the only difference is that  1 - it does not move linearly
+        //                              2 - it has to rotate around a pivot
+        // there was an opportunity here for cleaner design
+        // something like IntegrateLinear() and IntegrateAngular()
+        // IntegrateLinear() can be done on everything including the root of the ragdoll
+        // IntegrateAngular() can be generalized to rotate always around a pivot (that is generally 0)
+        // Rotation result could be applied on the pivot later on.
+
         // Objects with pivots
         if (physicsRigidbody.Bone)
         {
@@ -39,7 +50,7 @@ public static class Integrator
         physicsRigidbody.Acceleration = physicsRigidbody.AccumulatedForces * physicsRigidbody.InverseMass + physicsRigidbody.Gravity;
         
         // Adjust angular acceleration
-        Debug.Assert(physicsRigidbody.MomentOfInertia > 0);
+        Debug.Assert(physicsRigidbody.MomentOfInertia > 0); // good use of assert
         physicsRigidbody.AngularAcceleration = physicsRigidbody.AccumulatedTorque / physicsRigidbody.MomentOfInertia;
         
         // Adjust velocity by acceleration

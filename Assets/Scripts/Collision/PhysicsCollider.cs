@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Collision
+namespace Collision // ok
 {
     public class PhysicsCollider : MonoBehaviour
     {

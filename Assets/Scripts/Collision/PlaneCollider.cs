@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Collision
 {
-    public class PlaneCollider : PhysicsCollider
+    public class PlaneCollider : PhysicsCollider // ok
     {
         public Vector3 Normal => transform.up;
 

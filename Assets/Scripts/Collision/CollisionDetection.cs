@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Collision
 {
+    // having contact information is excellent
     public class Contact
     {
         public Vector3 Normal;
@@ -69,6 +70,7 @@ namespace Collision
 
             float distance;
 
+            // this does work
             if (bottomDistance > topDistance)
             {
                 distance = bottomDistance;
@@ -80,6 +82,7 @@ namespace Collision
                 capsuleContactPoint = c.Center + c.TopPoint;
             }
             
+            // in your case it would be safer to use half spaces instead
             if (centerDistance >= p.Offset)
             {
                 penetration = (c.Radius + p.Offset) - distance;
@@ -99,6 +102,7 @@ namespace Collision
             Vector3 normal;
             float penetration = 0;
 
+            // this does work
             Vector2 closestPoint = c.ClosestPoint(s.Center);
             Vector2 offset = (Vector2) s.Center - closestPoint;
             normal = offset.normalized;
@@ -110,6 +114,10 @@ namespace Collision
     
         public static void GetNormalAndPenetration(CapsuleCollider c1, CapsuleCollider c2, out Contact contact)
         {
+            // this does NOT work, but is probably close enough
+            // for it to truly work, you would need to iterate until the closestPoint you
+            // get stops moving, meaning you found a minimum
+            // if you looked in the book or online, you could have found a better solution
             Vector2 c2Closest = c2.ClosestPoint(c1.Center);
             Vector2 c1Closest = c1.ClosestPoint(c2Closest);
             Vector2 offset = c1Closest - c2Closest;
@@ -140,6 +148,7 @@ namespace Collision
                 if(rb1.IsRootBone)
                     rb1.Bone.position += deltaPosA * contact.Normal;
 
+                // this should be the root if you hit the ragdoll
                 contact1Vel = rb1.GetTotalVelocity();
             }
             else

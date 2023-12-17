@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace Collision
+namespace Collision // btw, use of namespace is good
 {
+    // this class is fine
     public class CapsuleCollider : PhysicsCollider
     {
         public float LengthOffset = 0.5f;
@@ -12,6 +13,7 @@ namespace Collision
 
         public Vector3 BottomPoint => -TopPoint;
 
+        // this seems good
         public Vector3 ClosestPoint(Vector3 pos)
         {
             Vector3 distance = pos - Center;
@@ -35,6 +37,7 @@ namespace Collision
         {
             if (TryGetComponent(out PhysicsRigidbody2D particle))
             {
+                // this is the gist of it !
                 return particle.Bone ? particle.AddTorque((Center - particle.Bone.position) - closestPoint, force) 
                     : particle.AddTorque(closestPoint, force);
             }

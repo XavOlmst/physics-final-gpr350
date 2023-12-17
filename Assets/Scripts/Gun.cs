@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviour // ok
 {
     public List<GameObject> Weapons;
     private int _index = 0;

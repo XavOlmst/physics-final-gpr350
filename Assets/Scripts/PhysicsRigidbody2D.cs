@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 public class PhysicsRigidbody2D : MonoBehaviour
 {
+    // you coul dhave used a few structs to help cleaning this
     public Vector3 Velocity;
     public float AngularVelocity;
     public float Damping = 0.999f;
@@ -39,6 +40,7 @@ public class PhysicsRigidbody2D : MonoBehaviour
     
     private void DoFixedUpdate(float dt)
     {
+        // Acceleration here does not seem to be used and the line can be removed
         Acceleration = Gravity + AccumulatedForces * InverseMass;
         Integrator.Integrate(this, dt);
         ClearForces();
@@ -47,6 +49,7 @@ public class PhysicsRigidbody2D : MonoBehaviour
 
     public Vector3 AddTorque(Vector3 radius, Vector3 force)
     {
+        // this works very well
         Vector3 cross = Vector3.Cross(radius, force);
 
         AccumulatedTorque += cross.z;
@@ -59,6 +62,7 @@ public class PhysicsRigidbody2D : MonoBehaviour
         PhysicsRigidbody2D prb = this;
         Vector3 totalVelocity = Vector3.zero;
         
+        // this does not make sense to compute velocities like this
         while (prb)
         {
             totalVelocity += (Vector3) prb.Velocity;

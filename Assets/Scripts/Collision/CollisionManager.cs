@@ -9,6 +9,7 @@ namespace Collision
 
         private void Start()
         {
+            // good thing to compute them only once since they do not change
             _colliders = FindObjectsOfType<PlaneCollider>();
         }
 
@@ -39,6 +40,7 @@ namespace Collision
                 // Sphere on capsule
                 foreach (CapsuleCollider capsule in capsules)
                 {
+                    // this is good
                     CollisionDetection.GetNormalAndPenetration(sphere, capsule, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
@@ -53,6 +55,15 @@ namespace Collision
                 {
                     var capsuleB = capsules[j];
 
+                    // using a tag is not the best solution but it works here
+                    // usually you would collide the ragdoll a whole with the outside world
+                    // so by default there would not be internal collisions
+                    // you would have something like "CollisionGroup" that contains the ragdoll colls
+                    // then you COULD (that's what I tend to do) and have "internal" collisions
+                    // and when going through the hierarchy avoid the test with direct children (for example)
+
+                    // for your case, what you did works
+
                     // Make sure the ragdoll cannot collide with itself
                     if (!capsuleA.CompareTag("Ragdoll") || !capsuleB.CompareTag("Ragdoll"))
                     {
@@ -64,6 +75,7 @@ namespace Collision
                 // Capsule on plane
                 foreach (PlaneCollider plane in _colliders)
                 {
+                    // this is good too
                     CollisionDetection.GetNormalAndPenetration(capsuleA, plane, out Contact contact);
                     CollisionDetection.ApplyCollisionResolution(contact);
                 }
